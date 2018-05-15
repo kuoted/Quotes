@@ -54,7 +54,7 @@ class MainWindow(QMainWindow):
         # 允许关闭tab
         self.ui.tabWidget.setTabsClosable(True)  # 显示关闭按钮
         #self.connect(self.ui.tabWidget, SIGNAL("tabCloseRequested(int)"), self.closeTab)
-        self.ui.tabWidget.connectNotify(self.closeTab)
+#        self.ui.tabWidget.connectNotify(self.closeTab)
         # 设置次级菜单
         self.Menu_Setting()
         # 设置主菜单与副菜单映射关系
@@ -278,18 +278,18 @@ class MainWindow(QMainWindow):
 
     def initMenu(self):
         """初始化右键菜单"""
-        self.menu = QtGui.QMenu(self)
+        self.menu = QMenu(self)
 
-        detailAction = QtGui.QAction(u'详情', self)
+        detailAction = QAction(u'详情', self)
         detailAction.triggered.connect(self.detail)
 
-        copyAction = QtGui.QAction(u'复制代码', self)
+        copyAction = QAction(u'复制代码', self)
         copyAction.triggered.connect(self.copy)
 
-        copyAllAction = QtGui.QAction(u'复制全部', self)
+        copyAllAction = QAction(u'复制全部', self)
         copyAllAction.triggered.connect(self.copyAll)
 
-        saveAction = QtGui.QAction(u'保存内容', self)
+        saveAction = QAction(u'保存内容', self)
         saveAction.triggered.connect(self.saveToCsv)
 
         self.menu.addAction(detailAction)
