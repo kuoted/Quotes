@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
-from PyQt4 import QtGui, QtCore, Qt
-from PyQt4.QtGui import *
+from PyQt5 import QtWidgets
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
+#from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+
 # import Fuct_QThreadUI
 from functools import partial
 import urllib
@@ -14,7 +19,7 @@ socket.setdefaulttimeout(4)
 其他窗口
 """
 # 日线窗口
-class DayLines(QWidget):
+class DayLines(QtWidgets.QWidget):
     def __init__(self,code, parent = None):
         super(DayLines,self).__init__(parent)
         self.setWindowTitle(u'日线')

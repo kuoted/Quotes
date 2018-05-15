@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
+import importlib
+
 import re, time
 import requests
+
 import numpy as np
 from pandas import DataFrame
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+importlib.reload(sys)
+
+#sys.setdefaultencoding('utf8')
 import Fuct_TS
 '''
 获取涨停预报
@@ -26,20 +30,20 @@ class SDU_Spider():
             time.sleep(1)
             url = 'http://www.178448.com/fjzt-1.html?page=' + str(i)
             try:
-                print "===================%s========================="%str(i)
+                print( "===================%s========================="%str(i) )
                 r = requests.get(url, timeout=5)
-                print url
+                print( url )
                 opage_list,Status = self.Web_Parser(r.text)
                 if Status:
                     Data_List = Data_List + opage_list
                 else:
-                    print "Status:", Status
+                    print( "Status:", Status )
                     break
-            except Exception,e:
-                print "===================ERROR========================="
-                print Exception,e
-                print url
-	    self.HeBin(Data_List)
+            except Exception as e:
+                print( "===================ERROR=========================" )
+                print( Exception,e )
+                print( url )
+        self.HeBin(Data_List)
 
     def Web_Parser(self,string):
         string = re.findall("<tbody>(.*?)</tbody>",string, re.S)[0]
@@ -63,7 +67,7 @@ class SDU_Spider():
                 if AmbushTime > self.StartTime:
                     opage_list.append(f_list)
                     Status = True
-                    print AmbushTime,SuccessRate,user,secShortName,AmbushSeason,Ambush_Price,SuccessNum
+                    print( AmbushTime,SuccessRate,user,secShortName,AmbushSeason,Ambush_Price,SuccessNum )
                 else:
                     # print AmbushTime, self.StartTime
                     # print type(AmbushTime), type(self.StartTime)
@@ -121,4 +125,4 @@ if __name__=='__main__':
     mySpider = SDU_Spider("2017-06-28  15:00")
     mySpider.FindPage()
     Data_List = mySpider.Data_List
-    print Data_List
+    print( Data_List )

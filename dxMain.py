@@ -8,14 +8,17 @@
 import sip
 import copy
 import os
+
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
+from PyQt5 import QtWidgets
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+
 from functools import partial
 import csv
 
@@ -27,17 +30,19 @@ from UI_Main import Ui_MainWindow
 import Login_Start
 import UI_Global
 
-class MainWindow(QtGui.QMainWindow):
+
+class MainWindow(QMainWindow):
     """主界面"""
     signalStatusBar = QtCore.pyqtSignal()
+
     def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self)
+        QMainWindow.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         # 初始化登录窗口
         self.LoginUI = Login_Start.MainWindow()
         self.LoginUI.show()
-        self.connect(self.LoginUI, QtCore.SIGNAL("transfer_login"), self.setLoginStatus)
+        #self.connect(self.LoginUI, QtCore.SIGNAL("transfer_login"), self.setLoginStatus)
         # 设置界面样式
         self.setWindowFlags(Qt.FramelessWindowHint)
         # self.showMaximized()
@@ -48,7 +53,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.sizeGrip_layout.setAlignment(sizeGrip, Qt.AlignRight)
         # 允许关闭tab
         self.ui.tabWidget.setTabsClosable(True)  # 显示关闭按钮
-        self.connect(self.ui.tabWidget, SIGNAL("tabCloseRequested(int)"), self.closeTab)
+        #self.connect(self.ui.tabWidget, SIGNAL("tabCloseRequested(int)"), self.closeTab)
+        self.ui.tabWidget.connectNotify(self.closeTab)
         # 设置次级菜单
         self.Menu_Setting()
         # 设置主菜单与副菜单映射关系
@@ -94,7 +100,7 @@ class MainWindow(QtGui.QMainWindow):
                           u"4、个股新闻\n")
 
     # 副菜单按钮-------------------------------------------------------------
-    def QPushButton_cRankStocks_clicked(self,date):
+    def QPushButton_cRankStocks_clicked(self, date):
         # import time
         # time.sleep(10)
         # 龙虎榜_查询近一天
@@ -110,7 +116,7 @@ class MainWindow(QtGui.QMainWindow):
         self.slavewindow.show()
         self.MyTable.hide()
 
-    def QPushButton_cLimit_clicked(self,date):
+    def QPushButton_cLimit_clicked(self, date):
         # 涨停预测_查询近一天
         if len(date) < 16:
             self.show_message(u"时间不正确，请检查后重试！")
@@ -158,20 +164,20 @@ class MainWindow(QtGui.QMainWindow):
     def Menu_Link(self):
         # 设置主菜单与副菜单映射关系
         self.MenuLink = [
-                            {
-                                "MainTitle": "龙虎榜",
-                                "CMenu":[self.ui.QPushButton_cRankStocks,self.ui.QPushButton_cRankChice,]
-                            },
+            {
+                "MainTitle": "龙虎榜",
+                "CMenu": [self.ui.QPushButton_cRankStocks, self.ui.QPushButton_cRankChice, ]
+            },
 
-                            {
-                                "MainTitle": "涨停预测",
-                                "CMenu": [self.ui.QPushButton_cLimit,self.ui.QPushButton_cLimitChice,]
-                            },
-                            {
-                                "MainTitle": "涨跌幅追踪",
-                                "CMenu": [self.ui.QPushButton_cFuctuation]
-                            },
-                        ]
+            {
+                "MainTitle": "涨停预测",
+                "CMenu": [self.ui.QPushButton_cLimit, self.ui.QPushButton_cLimitChice, ]
+            },
+            {
+                "MainTitle": "涨跌幅追踪",
+                "CMenu": [self.ui.QPushButton_cFuctuation]
+            },
+        ]
 
     def Menu_Setting(self):
         # 设置菜单
@@ -195,9 +201,11 @@ class MainWindow(QtGui.QMainWindow):
         buttonList.append(self.ui.QPushButton_cFuctuation)
 
         # 绑定副菜单按钮
-        self.ui.QPushButton_cRankStocks.clicked.connect(partial(self.QPushButton_cRankStocks_clicked, Fuct_Global.todayDate("%Y-%m-%d")))
+        self.ui.QPushButton_cRankStocks.clicked.connect(
+            partial(self.QPushButton_cRankStocks_clicked, Fuct_Global.todayDate("%Y-%m-%d")))
         self.ui.QPushButton_cRankChice.clicked.connect(partial(self.QPushButton_cRankChice_clicked))
-        self.ui.QPushButton_cLimit.clicked.connect(partial(self.QPushButton_cLimit_clicked, Fuct_Global.lastdayDateTime("%Y-%m-%d %H:%M")))
+        self.ui.QPushButton_cLimit.clicked.connect(
+            partial(self.QPushButton_cLimit_clicked, Fuct_Global.lastdayDateTime("%Y-%m-%d %H:%M")))
         self.ui.QPushButton_cLimitChice.clicked.connect(partial(self.QPushButton_cLimitChice_clicked))
         self.ui.QPushButton_cFuctuation.clicked.connect(partial(self.QPushButton_cFuctuationChice_clicked))
 
@@ -205,7 +213,7 @@ class MainWindow(QtGui.QMainWindow):
         for button in buttonList:
             self.ui.horizontalLayout_6.addWidget(button)
 
-    def UpdateMenu(self,mButtonName):
+    def UpdateMenu(self, mButtonName):
         # 刷新二级菜单
         mButtonName = str(mButtonName)
 
@@ -219,21 +227,21 @@ class MainWindow(QtGui.QMainWindow):
 
     def KeepButtonStatus(self):
         # 保持按钮高亮
-        Button_List = [self.ui.QToolButton_mRankList,self.ui.QToolButton_mNews,self.ui.QToolButton_mSecType,
-                       self.ui.QPushButton_cFuctuation,self.ui.QToolButton_mLimit]
+        Button_List = [self.ui.QToolButton_mRankList, self.ui.QToolButton_mNews, self.ui.QToolButton_mSecType,
+                       self.ui.QPushButton_cFuctuation, self.ui.QToolButton_mLimit]
         for toolButton in Button_List:
             toolButton.setCheckable(True)
             toolButton.setAutoExclusive(True)
 
-    def mousePressEvent(self,event):
+    def mousePressEvent(self, event):
         """鼠标点击事件"""
         if event.button() == QtCore.Qt.LeftButton:
             self.dragPosition = event.globalPos() - self.frameGeometry().topLeft()
             event.accept()
 
-    def mouseMoveEvent(self,event):
+    def mouseMoveEvent(self, event):
         """鼠标移动事件"""
-        if event.buttons() ==QtCore.Qt.LeftButton:
+        if event.buttons() == QtCore.Qt.LeftButton:
             self.move(event.globalPos() - self.dragPosition)
             event.accept()
 
@@ -246,10 +254,10 @@ class MainWindow(QtGui.QMainWindow):
     # 表格函数-----------------------------------------------------------------
     def initMyToolBox(self):
         """设置二维表格"""
-        self.MyTable.setRowCount(len(self.dataList)+5)
+        self.MyTable.setRowCount(len(self.dataList) + 5)
         self.MyTable.setColumnCount(len(self.headerList))
         for i in Fuct_TableHeader.headerWidth[self.tableType]:
-            self.MyTable.setColumnWidth(i,300)  # 设置宽度
+            self.MyTable.setColumnWidth(i, 300)  # 设置宽度
         self.MyTable.setHorizontalHeaderLabels(self.headerList)
 
     def initToolBox(self):
@@ -375,7 +383,7 @@ class MainWindow(QtGui.QMainWindow):
                 # 为保证排序正确，self.dataList数据中不包含%
                 # 如果表格头中包含%，在设置数据时将%加上
                 if "%" in self.headerList[j]:
-                    Info = unicode(Info)+u"%"
+                    Info = unicode(Info) + u"%"
                 Info = unicode(Info)
                 newItem = QTableWidgetItem(Info)
                 # 添加提示气泡
@@ -398,10 +406,12 @@ class MainWindow(QtGui.QMainWindow):
         # 关闭Tab页面
         self.ui.tabWidget.removeTab(index)
 
+
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     import qdarkstyle
-    app.setStyleSheet(qdarkstyle.load_stylesheet(pyside=False))
+
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     main = MainWindow()
     main.show()
     sys.exit(app.exec_())

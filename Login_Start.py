@@ -1,30 +1,33 @@
 # -*- coding: utf-8 -*-
 
-import ConfigParser
+import configparser
 import re
 import sys
 from functools import partial
-from PyQt4 import QtCore,QtGui
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
+from PyQt5 import QtWidgets
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
+
 from UI_Login import Ui_Form
 import UI_Register
 import Fuct_Account
 import Fuct_Json
 
 
-class MainWindow(QtGui.QDialog):
+class MainWindow(QtWidgets.QDialog):
     """启动登录流程"""
 
     def __init__(self,parent=None):
         """初始化登录界面"""
-        QtGui.QMainWindow.__init__(self)
+        QtWidgets.QMainWindow.__init__(self)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         # 背景透明
-        self.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
+        # self.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
         self.ui.QLineEdit_user.setPlaceholderText(u'用户名')
-        self.ui.QLineEdit_Password.setEchoMode(QtGui.QLineEdit.Password)
+        self.ui.QLineEdit_Password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.ui.QLineEdit_Password.setPlaceholderText(u'密码')
         # 设置界面样式
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
@@ -37,7 +40,7 @@ class MainWindow(QtGui.QDialog):
 
     def Rember_Info(self):
         """读取登录信息"""
-        cf = ConfigParser.ConfigParser()
+        cf = configparser.ConfigParser()
         cf.read('./Config.ini')
         # print
         Rember = cf.get("INFO", "Rember")
@@ -147,8 +150,8 @@ class MainWindow(QtGui.QDialog):
                         self.show_message(u'注册失败，请重试或联系客服。\n客服QQ：306911135')
                 else:
                     self.show_message(u'注册失败，请重试或联系客服。\n客服QQ：306911135')
-        except Exception, e:
-            print Exception, e
+        except Exception as e:
+            print( Exception, e )
             self.show_message(u'请检查网络是否正常！')
 
     def Mach_UserInfo(self, Info, Type):
@@ -182,8 +185,9 @@ class MainWindow(QtGui.QDialog):
 
 if __name__ == '__main__':
     import qdarkstyle
-    app = QtGui.QApplication(sys.argv)
-    app.setStyleSheet(qdarkstyle.load_stylesheet(pyside=False))
+    app = QtWidgets.QApplication(sys.argv)
+    #app.setStyleSheet(qdarkstyle.load_stylesheet(pyside=False))
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     main = MainWindow()
     main.show()
     sys.exit(app.exec_())

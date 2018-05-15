@@ -8,8 +8,8 @@ import datetime
 import pandas as pd
 import tushare as ts
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+#reload(sys)
+#sys.setdefaultencoding('utf8')
 
 # ----------------------------------------------------------------------
 def TradeingDatGET():
@@ -35,4 +35,4 @@ if __name__ == '__main__':
     stock_basics = get_stock_basics()
     secShortName = "平安银行"
     # print stock_basics['secShortName'][0].decode("gbk")
-    print stock_basics["secID"][stock_basics['secShortName'] == secShortName.encode("gbk")].tolist()[0]
+    print( stock_basics["secID"][stock_basics['secShortName'] == secShortName.encode("gbk")].tolist()[0] )
