@@ -11,61 +11,6 @@ from pyqtgraph import QtCore, QtGui
 ## Create a subclass of GraphicsObject.
 ## The only required methods are paint() and boundingRect() 
 ## (see QGraphicsItem documentation)
-class CandlestickItem(pg.GraphicsObject):
-    def __init__(self, data):
-        pg.GraphicsObject.__init__(self)
-        self.data = data  ## data must have fields: time, open, close, min, max
-        self.generatePicture()
-    
-    def generatePicture(self):
-        ## pre-computing a QPicture object allows paint() to run much more quickly, 
-        ## rather than re-drawing the shapes every time.
-        self.picture = QtGui.QPicture()
-        p = QtGui.QPainter(self.picture)
-        p.setPen(pg.mkPen('w'))
-        w = (self.data[1][0] - self.data[0][0]) / 3.
-        for (t, open, close, min, max) in self.data:
-            p.drawLine(QtCore.QPointF(t, min), QtCore.QPointF(t, max))
-            if open > close:
-                p.setBrush(pg.mkBrush('r'))
-            else:
-                p.setBrush(pg.mkBrush('g'))
-            p.drawRect(QtCore.QRectF(t-w, open, w*2, close-open))
-        p.end()
-    
-    def paint(self, p, *args):
-        p.drawPicture(0, 0, self.picture)
-    
-    def boundingRect(self):
-        ## boundingRect _must_ indicate the entire area that will be drawn on
-        ## or else we will get artifacts and possibly crashing.
-        ## (in this case, QPicture does all the work of computing the bouning rect for us)
-        return QtCore.QRectF(self.picture.boundingRect())
-
-class DrawChart():
-    def pyqtgraphDrawChart(self, code='sh', start=str(datetime.date.today() - datetime.timedelta(days=150)), end=str(datetime.date.today() + datetime.timedelta(days=1)), ktype='D'):
-        try:
-            self.hist_data = ts.get_hist_data(code, start, end, ktype).sort_index()
-            self.data_list = []
-            t = 0
-            for dates, row in self.hist_data.iterrows():
-                open, high, close, low = row[:4]
-                datas = (t, open, close, low, high)
-                self.data_list.append(datas)
-                t += 1
-            self.item = CandlestickItem(self.data_list)
-            self.xdict = {0: str(self.hist_data.index[0]).replace('-', '/'),
-                     int((t + 1) / 2) - 1: str(self.hist_data.index[int((t + 1) / 2)]).replace('-', '/'),
-                     t - 1: str(self.hist_data.index[-1]).replace('-', '/')}
-            self.stringaxis = pg.AxisItem(orientation='bottom')
-            self.stringaxis.setTicks([self.xdict.items()])
-            self.plt = pg.PlotWidget(axisItems={'bottom': self.stringaxis}, enableMenu=False)
-
-            self.plt.addItem(self.item)
-            self.plt.showGrid(x=True, y=True)
-            return self.plt
-        except:
-            return pg.PlotWidget()
 
 class CandlestickItem(pg.GraphicsObject):
     def __init__(self, data):
@@ -96,6 +41,30 @@ class CandlestickItem(pg.GraphicsObject):
     def boundingRect(self):
         return QtCore.QRectF(self.picture.boundingRect())
 
+class DrawChart():
+    def pyqtgraphDrawChart(self, code='sh', start=str(datetime.date.today() - datetime.timedelta(days=150)), end=str(datetime.date.today() + datetime.timedelta(days=1)), ktype='D'):
+        try:
+            self.hist_data = ts.get_hist_data(code, start, end, ktype).sort_index()
+            self.data_list = []
+            t = 0
+            for dates, row in self.hist_data.iterrows():
+                open, high, close, low = row[:4]
+                datas = (t, open, close, low, high)
+                self.data_list.append(datas)
+                t += 1
+            self.item = CandlestickItem(self.data_list)
+            self.xdict = {0: str(self.hist_data.index[0]).replace('-', '/'),
+                          int((t + 1) / 2) - 1: str(self.hist_data.index[int((t + 1) / 2)]).replace('-', '/'),
+                          t - 1: str(self.hist_data.index[-1]).replace('-', '/')}
+            self.stringaxis = pg.AxisItem(orientation='bottom')
+            self.stringaxis.setTicks([self.xdict.items()])
+            self.plt = pg.PlotWidget(axisItems={'bottom': self.stringaxis}, enableMenu=False)
+
+            self.plt.addItem(self.item)
+            self.plt.showGrid(x=True, y=True)
+            return self.plt
+        except:
+            return pg.PlotWidget()
 
 ## Start Qt event loop unless running in interactive mode or using pyside.
 if __name__ == '__main__':
