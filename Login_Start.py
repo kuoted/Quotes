@@ -9,6 +9,7 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
 
 from UI_Login import Ui_Form
 import UI_Register
@@ -16,12 +17,13 @@ import Fuct_Account
 import Fuct_Json
 
 
-class MainWindow(QtWidgets.QDialog):
+class MainWindow(QDialog):
     """启动登录流程"""
-
+	on_login_success = pyqtSignal(int)
     def __init__(self,parent=None):
-        """初始化登录界面"""
-        QtWidgets.QMainWindow.__init__(self)
+		"""初始化登录界面"""
+        #QtWidgets.QMainWindow.__init__(self)
+        super.__init__(self)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         # 背景透明
@@ -66,6 +68,9 @@ class MainWindow(QtWidgets.QDialog):
         cf.write(open("./Config.ini", "w"))
 
     def Login(self):
+    	on_login_success.emit( 0 )
+    	return
+    
         """进入登陆流程"""
         if len(self.ui.QLineEdit_user.text()) > 5 and len(self.ui.QLineEdit_Password.text()) > 5:
             # print ,
@@ -79,7 +84,8 @@ class MainWindow(QtWidgets.QDialog):
                 if Result["status"] == "0":
                     self.close()
                     self.Save_Rember_Info()
-                    self.emit(QtCore.SIGNAL("transfer_login"), 0)
+                    on_login_success.emit( 0 )
+                    #self.emit(QtCore.SIGNAL("transfer_login"), 0)
                     self.show_message(u'登陆成功！')
                 else:
                     self.show_message(u"登陆失败，请重试或联系客服。\n客服QQ：306911135")

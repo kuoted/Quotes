@@ -5,13 +5,10 @@
 """
 
 # 系统模块
-import sip
 import copy
 import os
-
-sip.setapi('QString', 2)
-sip.setapi('QVariant', 2)
 import sys
+import csv
 
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
@@ -20,28 +17,29 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from functools import partial
-import csv
+
 
 # 自定义模块
 import Fuct_QThreadUI
 import Fuct_TableHeader
 import Fuct_Global
-from UI_Main import Ui_MainWindow
 import Login_Start
 import UI_Global
 
+from UI_Main import Ui_MainWindow
 
 class MainWindow(QMainWindow):
     """主界面"""
     signalStatusBar = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
-        QMainWindow.__init__(self)
+        super.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         # 初始化登录窗口
         self.LoginUI = Login_Start.MainWindow()
         self.LoginUI.show()
+        self.LoginUI.on_login_success.connect( self.onLogin )
         #self.connect(self.LoginUI, QtCore.SIGNAL("transfer_login"), self.setLoginStatus)
         # 设置界面样式
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -246,7 +244,7 @@ class MainWindow(QMainWindow):
             event.accept()
 
     # 登陆状态----------------------------------------------------------------
-    def setLoginStatus(self, status):
+    def onLogin(self, status):
         # 0成功
         self.LoginStatus = status
         self.ui.QToolButton_Login.setText(u"已登录")
