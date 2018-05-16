@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3cde275c-519c-49d6-b0d0-56fa4c0e5091}</ProjectGuid>
+    <ProjectHome>..\</ProjectHome>
+    <StartupFile>UI\UI_MainWindows.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>Global|ContinuumAnalytics|Anaconda36-64</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Config.ini" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-01-19.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-01-20.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-01-23.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-01-24.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-01-25.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-01-26.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-03.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-06.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-07.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-08.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-09.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-10.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-13.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-14.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-15.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-16.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-17.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-20.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-21.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-22.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-23.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-24.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-27.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-02-28.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-01.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-02.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-03.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-06.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-07.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-08.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-09.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-10.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-13.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-14.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-15.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-16.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-17.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-20.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-21.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-22.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-23.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-24.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-27.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-03-28.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-06-12.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-07-28.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-08-11.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-09-01.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-10-23.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-11-01.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-11-02.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-11-23.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-12-07.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-12-08.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-12-11.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-12-12.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2017-12-15.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2018-01-08.txt" />
+    <Content Include="data\MktRankListStocks\RankListStocks2018-05-11.txt" />
+    <Content Include="data\tmp\Quote.png" />
+    <Content Include="Imag\arrowBottom.png" />
+    <Content Include="Imag\arrowLeft.png" />
+    <Content Include="Imag\arrowRight.png" />
+    <Content Include="Imag\arrowTop.png" />
+    <Content Include="Imag\Background2.png" />
+    <Content Include="Imag\bottomArrow.png" />
+    <Content Include="Imag\bottomArrowHover.png" />
+    <Content Include="Imag\calendar.png" />
+    <Content Include="Imag\checkBox.png" />
+    <Content Include="Imag\checkBoxChecked.png" />
+    <Content Include="Imag\checkBoxCheckedHover.png" />
+    <Content Include="Imag\checkBoxCheckedPressed.png" />
+    <Content Include="Imag\checkBoxHover.png" />
+    <Content Include="Imag\checkBoxIndeterminate.png" />
+    <Content Include="Imag\checkBoxIndeterminateHover.png" />
+    <Content Include="Imag\checkBoxIndeterminatePressed.png" />
+    <Content Include="Imag\checkBoxPressed.png" />
+    <Content Include="Imag\close.png" />
+    <Content Include="Imag\closeHover.png" />
+    <Content Include="Imag\closePressed.png" />
+    <Content Include="Imag\delete.png" />
+    <Content Include="Imag\deleteHover.png" />
+    <Content Include="Imag\deletePressed.png" />
+    <Content Include="Imag\downButton.png" />
+    <Content Include="Imag\error.png" />
+    <Content Include="Imag\feedback.png" />
+    <Content Include="Imag\feedbackHover.png" />
+    <Content Include="Imag\feedbackPressed.png" />
+    <Content Include="Imag\icon.ico" />
+    <Content Include="Imag\information.png" />
+    <Content Include="Imag\left.png" />
+    <Content Include="Imag\maximize.png" />
+    <Content Include="Imag\maximizeHover.png" />
+    <Content Include="Imag\maximizePressed.png" />
+    <Content Include="Imag\minimize.png" />
+    <Content Include="Imag\minimizeHover.png" />
+    <Content Include="Imag\minimizePressed.png" />
+    <Content Include="Imag\nscc.png" />
+    <Content Include="Imag\open.png" />
+    <Content Include="Imag\openHover.png" />
+    <Content Include="Imag\openPressed.png" />
+    <Content Include="Imag\progressBar.png" />
+    <Content Include="Imag\progressBarChunk.png" />
+    <Content Include="Imag\question.png" />
+    <Content Include="Imag\radioButton.png" />
+    <Content Include="Imag\radioButtonChecked.png" />
+    <Content Include="Imag\radioButtonCheckedHover.png" />
+    <Content Include="Imag\radioButtonCheckedPressed.png" />
+    <Content Include="Imag\radioButtonHover.png" />
+    <Content Include="Imag\radioButtonPressed.png" />
+    <Content Include="Imag\restore.png" />
+    <Content Include="Imag\restoreHover.png" />
+    <Content Include="Imag\restorePressed.png" />
+    <Content Include="Imag\right.png" />
+    <Content Include="Imag\scan.png" />
+    <Content Include="Imag\Signal.ico" />
+    <Content Include="Imag\sizegrip.png" />
+    <Content Include="Imag\skin.png" />
+    <Content Include="Imag\skinHover.png" />
+    <Content Include="Imag\skinPressed.png" />
+    <Content Include="Imag\success.png" />
+    <Content Include="Imag\topArrow.png" />
+    <Content Include="Imag\topArrowHover.png" />
+    <Content Include="Imag\topback.png" />
+    <Content Include="Imag\transfer.png" />
+    <Content Include="Imag\upButton.png" />
+    <Content Include="Imag\warning.png" />
+    <Content Include="ScreenShot\主界面.png" />
+    <Content Include="ScreenShot\按日期查询.png" />
+    <Content Include="ScreenShot\登录界面.png" />
+    <Content Include="ScreenShot\行情K线.png" />
+    <Content Include="ScreenShot\论坛数据爬虫归并统计.png" />
+    <Content Include="UI\chap09\bill-of-rights.txt" />
+    <Content Include="UI\chap09\human-rights.txt" />
+    <Content Include="UI\chap09\images\editadd.png" />
+    <Content Include="UI\chap09\images\editcopy.png" />
+    <Content Include="UI\chap09\images\editcut.png" />
+    <Content Include="UI\chap09\images\editdelete.png" />
+    <Content Include="UI\chap09\images\editedit.png" />
+    <Content Include="UI\chap09\images\editpaste.png" />
+    <Content Include="UI\chap09\images\filenew.png" />
+    <Content Include="UI\chap09\images\fileopen.png" />
+    <Content Include="UI\chap09\images\filequit.png" />
+    <Content Include="UI\chap09\images\filesave.png" />
+    <Content Include="UI\chap09\images\filesaveas.png" />
+    <Content Include="UI\chap09\images\icon.png" />
+    <Content Include="UI\chap09\independence.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="dxMain.py" />
+    <Compile Include="EmbedWidget.py" />
+    <Compile Include="Fuct_Account.py" />
+    <Compile Include="Fuct_DataAPI.py" />
+    <Compile Include="Fuct_drEngine.py" />
+    <Compile Include="Fuct_EnCode.py" />
+    <Compile Include="Fuct_FuctUI.py" />
+    <Compile Include="Fuct_Global.py" />
+    <Compile Include="Fuct_Http.py" />
+    <Compile Include="Fuct_Json.py" />
+    <Compile Include="Fuct_Limit.py" />
+    <Compile Include="Fuct_LocalData.py" />
+    <Compile Include="Fuct_MenuLink.py" />
+    <Compile Include="Fuct_Parser.py" />
+    <Compile Include="Fuct_QThreadUI.py" />
+    <Compile Include="Fuct_TableHeader.py" />
+    <Compile Include="Fuct_TS.py" />
+    <Compile Include="Login_Start.py" />
+    <Compile Include="UI\candle_stick.py" />
+    <Compile Include="UI\chap09\findandreplacedlg.py" />
+    <Compile Include="UI\chap09\findandreplacedlg.pyw" />
+    <Compile Include="UI\chap09\newsreader.pyw" />
+    <Compile Include="UI\chap09\paymentdlg.py" />
+    <Compile Include="UI\chap09\paymentdlg.pyw" />
+    <Compile Include="UI\chap09\sditexteditor.pyw" />
+    <Compile Include="UI\chap09\sditexteditor2.pyw" />
+    <Compile Include="UI\chap09\tabbededitor.pyw" />
+    <Compile Include="UI\chap09\textedit.py" />
+    <Compile Include="UI\chap09\texteditor.pyw" />
+    <Compile Include="UI\chap09\vehiclerentaldlg.py" />
+    <Compile Include="UI\chap09\vehiclerentaldlg.pyw" />
+    <Compile Include="UI\chap09\转换UI.py" />
+    <Compile Include="UI\textedit.py" />
+    <Compile Include="UI\texteditor.py" />
+    <Compile Include="UI\UI_MainWindows.py" />
+    <Compile Include="UI_Global.py" />
+    <Compile Include="UI_Login.py" />
+    <Compile Include="UI_Main.py" />
+    <Compile Include="UI_MessageBox.py" />
+    <Compile Include="UI_Register.py" />
+    <Compile Include="UI_Resource_rc.py" />
+    <Compile Include="UI_Setting.py" />
+    <Compile Include="转换UI.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="data\" />
+    <Folder Include="data\MktRankListStocks" />
+    <Folder Include="data\tmp" />
+    <Folder Include="Imag" />
+    <Folder Include="ScreenShot" />
+    <Folder Include="UI" />
+    <Folder Include="UI\chap09" />
+    <Folder Include="UI\chap09\images" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda36-64" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>
