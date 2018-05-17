@@ -50,7 +50,7 @@ class CandlestickItem(pg.GraphicsObject):
         return QtCore.QRectF(self.picture.boundingRect())
 
 class DrawChart():
-    def chart():
+    def chart( ):
         hist_data = ts.get_hist_data('600519',start='2017-05-01',end='2017-11-24')
         data_list = []
         for dates,row in hist_data.iterrows():
@@ -69,20 +69,14 @@ class DrawChart():
         return plt
 
 
-        ## Start Qt event loop unless running in interactive mode or using pyside.
+## Start Qt event loop unless running in interactive mode or using pyside.
 if __name__ == '__main__':
     import sys
-    data = [  ## fields are (time, open, close, min, max).
-        (1., 10, 13, 5, 15),
-        (2., 13, 17, 9, 20),
-        (3., 17, 14, 11, 23),
-        (4., 14, 15, 5, 19),
-        (5., 15, 9, 8, 22),
-        (6., 9, 15, 8, 16),]
-    item = CandlestickItem(data)
-    plt = pg.plot()
-    plt.addItem(item)
-    plt.setWindowTitle('pyqtgraph example: customGraphicsItem')
+    app = QtGui.QApplication(sys.argv)
+    
+    main_window = QtGui.QMainWindow()
+    main_window.setCentralWidget( DrawChart.chart() )
+    main_window.show()
 
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
+        app.exec_()

@@ -1,0 +1,1177 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>18.5.1. Base Event Loop &#8212; Python 3.6.5 documentation</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Python 3.6.5 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="18.5.2. Event loops" href="asyncio-eventloops.html" />
+    <link rel="prev" title="18.5. asyncio — Asynchronous I/O, event loop, coroutines and tasks" href="asyncio.html" />
+    <link rel="shortcut icon" type="image/png" href="../_static/py.png" />
+    <link rel="canonical" href="https://docs.python.org/3/library/asyncio-eventloop.html" />
+    
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+    
+    
+ 
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="asyncio-eventloops.html" title="18.5.2. Event loops"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="asyncio.html" title="18.5. asyncio — Asynchronous I/O, event loop, coroutines and tasks"
+             accesskey="P">previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >The Python Standard Library</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="ipc.html" >18. Interprocess Communication and Networking</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="asyncio.html" accesskey="U">18.5. <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> — Asynchronous I/O, event loop, coroutines and tasks</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="base-event-loop">
+<span id="asyncio-event-loop"></span><h1>18.5.1. Base Event Loop<a class="headerlink" href="#base-event-loop" title="Permalink to this headline">¶</a></h1>
+<p><strong>Source code:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.6/Lib/asyncio/events.py">Lib/asyncio/events.py</a></p>
+<p>The event loop is the central execution device provided by <a class="reference internal" href="asyncio.html#module-asyncio" title="asyncio: Asynchronous I/O, event loop, coroutines and tasks."><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a>.
+It provides multiple facilities, including:</p>
+<ul class="simple">
+<li>Registering, executing and cancelling delayed calls (timeouts).</li>
+<li>Creating client and server <a class="reference internal" href="asyncio-protocol.html#asyncio-transport"><span class="std std-ref">transports</span></a> for various
+kinds of communication.</li>
+<li>Launching subprocesses and the associated <a class="reference internal" href="asyncio-protocol.html#asyncio-transport"><span class="std std-ref">transports</span></a> for communication with an external program.</li>
+<li>Delegating costly function calls to a pool of threads.</li>
+</ul>
+<dl class="class">
+<dt id="asyncio.BaseEventLoop">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">BaseEventLoop</code><a class="headerlink" href="#asyncio.BaseEventLoop" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is an implementation detail.  It is a subclass of
+<a class="reference internal" href="#asyncio.AbstractEventLoop" title="asyncio.AbstractEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractEventLoop</span></code></a> and may be a base class of concrete
+event loop implementations found in <a class="reference internal" href="asyncio.html#module-asyncio" title="asyncio: Asynchronous I/O, event loop, coroutines and tasks."><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a>.  It should not
+be used directly; use <a class="reference internal" href="#asyncio.AbstractEventLoop" title="asyncio.AbstractEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractEventLoop</span></code></a> instead.
+<code class="docutils literal notranslate"><span class="pre">BaseEventLoop</span></code> should not be subclassed by third-party code; the
+internal interface is not stable.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="asyncio.AbstractEventLoop">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">AbstractEventLoop</code><a class="headerlink" href="#asyncio.AbstractEventLoop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract base class of event loops.</p>
+<p>This class is <a class="reference internal" href="asyncio-dev.html#asyncio-multithreading"><span class="std std-ref">not thread safe</span></a>.</p>
+</dd></dl>
+
+<div class="section" id="run-an-event-loop">
+<h2>18.5.1.1. Run an event loop<a class="headerlink" href="#run-an-event-loop" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.run_forever">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">run_forever</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.run_forever" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run until <a class="reference internal" href="#asyncio.AbstractEventLoop.stop" title="asyncio.AbstractEventLoop.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code></a> is called.  If <a class="reference internal" href="#asyncio.AbstractEventLoop.stop" title="asyncio.AbstractEventLoop.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code></a> is called before
+<a class="reference internal" href="#asyncio.AbstractEventLoop.run_forever" title="asyncio.AbstractEventLoop.run_forever"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run_forever()</span></code></a> is called, this polls the I/O selector once
+with a timeout of zero, runs all callbacks scheduled in response to
+I/O events (and those that were already scheduled), and then exits.
+If <a class="reference internal" href="#asyncio.AbstractEventLoop.stop" title="asyncio.AbstractEventLoop.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code></a> is called while <a class="reference internal" href="#asyncio.AbstractEventLoop.run_forever" title="asyncio.AbstractEventLoop.run_forever"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run_forever()</span></code></a> is running,
+this will run the current batch of callbacks and then exit.  Note
+that callbacks scheduled by callbacks will not run in that case;
+they will run the next time <a class="reference internal" href="#asyncio.AbstractEventLoop.run_forever" title="asyncio.AbstractEventLoop.run_forever"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run_forever()</span></code></a> is called.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 3.5.1.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.run_until_complete">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">run_until_complete</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.run_until_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run until the <a class="reference internal" href="asyncio-task.html#asyncio.Future" title="asyncio.Future"><code class="xref py py-class docutils literal notranslate"><span class="pre">Future</span></code></a> is done.</p>
+<p>If the argument is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine object</span></a>, it is wrapped by
+<a class="reference internal" href="asyncio-task.html#asyncio.ensure_future" title="asyncio.ensure_future"><code class="xref py py-func docutils literal notranslate"><span class="pre">ensure_future()</span></code></a>.</p>
+<p>Return the Future’s result, or raise its exception.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.is_running">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">is_running</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.is_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns running status of event loop.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.stop">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop running the event loop.</p>
+<p>This causes <a class="reference internal" href="#asyncio.AbstractEventLoop.run_forever" title="asyncio.AbstractEventLoop.run_forever"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run_forever()</span></code></a> to exit at the next suitable
+opportunity (see there for more details).</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 3.5.1.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.is_closed">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">is_closed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.is_closed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the event loop was closed.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.4.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.close">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the event loop. The loop must not be running.  Pending
+callbacks will be lost.</p>
+<p>This clears the queues and shuts down the executor, but does not wait for
+the executor to finish.</p>
+<p>This is idempotent and irreversible. No other methods should be called after
+this one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.shutdown_asyncgens">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">shutdown_asyncgens</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.shutdown_asyncgens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schedule all currently open <a class="reference internal" href="../glossary.html#term-asynchronous-generator"><span class="xref std std-term">asynchronous generator</span></a> objects to
+close with an <a class="reference internal" href="../reference/expressions.html#agen.aclose" title="agen.aclose"><code class="xref py py-meth docutils literal notranslate"><span class="pre">aclose()</span></code></a> call.  After calling this method,
+the event loop will issue a warning whenever a new asynchronous generator
+is iterated.  Should be used to finalize all scheduled asynchronous
+generators reliably.  Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">loop</span><span class="o">.</span><span class="n">shutdown_asyncgens</span><span class="p">())</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.6.</span></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="calls">
+<span id="asyncio-pass-keywords"></span><h2>18.5.1.2. Calls<a class="headerlink" href="#calls" title="Permalink to this headline">¶</a></h2>
+<p>Most <a class="reference internal" href="asyncio.html#module-asyncio" title="asyncio: Asynchronous I/O, event loop, coroutines and tasks."><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> functions don’t accept keywords. If you want to pass
+keywords to your callback, use <a class="reference internal" href="functools.html#functools.partial" title="functools.partial"><code class="xref py py-func docutils literal notranslate"><span class="pre">functools.partial()</span></code></a>. For example,
+<code class="docutils literal notranslate"><span class="pre">loop.call_soon(functools.partial(print,</span> <span class="pre">&quot;Hello&quot;,</span> <span class="pre">flush=True))</span></code> will call
+<code class="docutils literal notranslate"><span class="pre">print(&quot;Hello&quot;,</span> <span class="pre">flush=True)</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="functools.html#functools.partial" title="functools.partial"><code class="xref py py-func docutils literal notranslate"><span class="pre">functools.partial()</span></code></a> is better than <code class="docutils literal notranslate"><span class="pre">lambda</span></code> functions, because
+<a class="reference internal" href="asyncio.html#module-asyncio" title="asyncio: Asynchronous I/O, event loop, coroutines and tasks."><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> can inspect <a class="reference internal" href="functools.html#functools.partial" title="functools.partial"><code class="xref py py-func docutils literal notranslate"><span class="pre">functools.partial()</span></code></a> object to display
+parameters in debug mode, whereas <code class="docutils literal notranslate"><span class="pre">lambda</span></code> functions have a poor
+representation.</p>
+</div>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.call_soon">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">call_soon</code><span class="sig-paren">(</span><em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.call_soon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arrange for a callback to be called as soon as possible.  The callback is
+called after <a class="reference internal" href="#asyncio.AbstractEventLoop.call_soon" title="asyncio.AbstractEventLoop.call_soon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">call_soon()</span></code></a> returns, when control returns to the event
+loop.</p>
+<p>This operates as a <abbr title="first-in, first-out">FIFO</abbr> queue, callbacks
+are called in the order in which they are registered.  Each callback
+will be called exactly once.</p>
+<p>Any positional arguments after the callback will be passed to the
+callback when it is called.</p>
+<p>An instance of <a class="reference internal" href="#asyncio.Handle" title="asyncio.Handle"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncio.Handle</span></code></a> is returned, which can be
+used to cancel the callback.</p>
+<p><a class="reference internal" href="#asyncio-pass-keywords"><span class="std std-ref">Use functools.partial to pass keywords to the callback</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.call_soon_threadsafe">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">call_soon_threadsafe</code><span class="sig-paren">(</span><em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.call_soon_threadsafe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like <a class="reference internal" href="#asyncio.AbstractEventLoop.call_soon" title="asyncio.AbstractEventLoop.call_soon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">call_soon()</span></code></a>, but thread safe.</p>
+<p>See the <a class="reference internal" href="asyncio-dev.html#asyncio-multithreading"><span class="std std-ref">concurrency and multithreading</span></a>
+section of the documentation.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="delayed-calls">
+<span id="asyncio-delayed-calls"></span><h2>18.5.1.3. Delayed calls<a class="headerlink" href="#delayed-calls" title="Permalink to this headline">¶</a></h2>
+<p>The event loop has its own internal clock for computing timeouts.
+Which clock is used depends on the (platform-specific) event loop
+implementation; ideally it is a monotonic clock.  This will generally be
+a different clock than <a class="reference internal" href="time.html#time.time" title="time.time"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.time()</span></code></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Timeouts (relative <em>delay</em> or absolute <em>when</em>) should not exceed one day.</p>
+</div>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.call_later">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">call_later</code><span class="sig-paren">(</span><em>delay</em>, <em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.call_later" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arrange for the <em>callback</em> to be called after the given <em>delay</em>
+seconds (either an int or float).</p>
+<p>An instance of <a class="reference internal" href="#asyncio.Handle" title="asyncio.Handle"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncio.Handle</span></code></a> is returned, which can be
+used to cancel the callback.</p>
+<p><em>callback</em> will be called exactly once per call to <a class="reference internal" href="#asyncio.AbstractEventLoop.call_later" title="asyncio.AbstractEventLoop.call_later"><code class="xref py py-meth docutils literal notranslate"><span class="pre">call_later()</span></code></a>.
+If two callbacks are scheduled for exactly the same time, it is
+undefined which will be called first.</p>
+<p>The optional positional <em>args</em> will be passed to the callback when it
+is called. If you want the callback to be called with some named
+arguments, use a closure or <a class="reference internal" href="functools.html#functools.partial" title="functools.partial"><code class="xref py py-func docutils literal notranslate"><span class="pre">functools.partial()</span></code></a>.</p>
+<p><a class="reference internal" href="#asyncio-pass-keywords"><span class="std std-ref">Use functools.partial to pass keywords to the callback</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.call_at">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">call_at</code><span class="sig-paren">(</span><em>when</em>, <em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.call_at" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arrange for the <em>callback</em> to be called at the given absolute timestamp
+<em>when</em> (an int or float), using the same time reference as
+<a class="reference internal" href="#asyncio.AbstractEventLoop.time" title="asyncio.AbstractEventLoop.time"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.time()</span></code></a>.</p>
+<p>This method’s behavior is the same as <a class="reference internal" href="#asyncio.AbstractEventLoop.call_later" title="asyncio.AbstractEventLoop.call_later"><code class="xref py py-meth docutils literal notranslate"><span class="pre">call_later()</span></code></a>.</p>
+<p>An instance of <a class="reference internal" href="#asyncio.Handle" title="asyncio.Handle"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncio.Handle</span></code></a> is returned, which can be
+used to cancel the callback.</p>
+<p><a class="reference internal" href="#asyncio-pass-keywords"><span class="std std-ref">Use functools.partial to pass keywords to the callback</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.time">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current time, as a <a class="reference internal" href="functions.html#float" title="float"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> value, according to the
+event loop’s internal clock.</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="asyncio-task.html#asyncio.sleep" title="asyncio.sleep"><code class="xref py py-func docutils literal notranslate"><span class="pre">asyncio.sleep()</span></code></a> function.</p>
+</div>
+</div>
+<div class="section" id="futures">
+<h2>18.5.1.4. Futures<a class="headerlink" href="#futures" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.create_future">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">create_future</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.create_future" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an <a class="reference internal" href="asyncio-task.html#asyncio.Future" title="asyncio.Future"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncio.Future</span></code></a> object attached to the loop.</p>
+<p>This is a preferred way to create futures in asyncio, as event
+loop implementations can provide alternative implementations
+of the Future class (with better performance or instrumentation).</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.5.2.</span></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="tasks">
+<h2>18.5.1.5. Tasks<a class="headerlink" href="#tasks" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.create_task">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">create_task</code><span class="sig-paren">(</span><em>coro</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.create_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schedule the execution of a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine object</span></a>: wrap it in
+a future. Return a <a class="reference internal" href="asyncio-task.html#asyncio.Task" title="asyncio.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a> object.</p>
+<p>Third-party event loops can use their own subclass of <a class="reference internal" href="asyncio-task.html#asyncio.Task" title="asyncio.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a> for
+interoperability. In this case, the result type is a subclass of
+<a class="reference internal" href="asyncio-task.html#asyncio.Task" title="asyncio.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a>.</p>
+<p>This method was added in Python 3.4.2. Use the <a class="reference internal" href="asyncio-task.html#asyncio.async" title="asyncio.async"><code class="xref py py-func docutils literal notranslate"><span class="pre">async()</span></code></a> function to
+support also older Python versions.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.4.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.set_task_factory">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">set_task_factory</code><span class="sig-paren">(</span><em>factory</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.set_task_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a task factory that will be used by
+<a class="reference internal" href="#asyncio.AbstractEventLoop.create_task" title="asyncio.AbstractEventLoop.create_task"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.create_task()</span></code></a>.</p>
+<p>If <em>factory</em> is <code class="docutils literal notranslate"><span class="pre">None</span></code> the default task factory will be set.</p>
+<p>If <em>factory</em> is a <em>callable</em>, it should have a signature matching
+<code class="docutils literal notranslate"><span class="pre">(loop,</span> <span class="pre">coro)</span></code>, where <em>loop</em> will be a reference to the active
+event loop, <em>coro</em> will be a coroutine object.  The callable
+must return an <a class="reference internal" href="asyncio-task.html#asyncio.Future" title="asyncio.Future"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncio.Future</span></code></a> compatible object.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.4.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.get_task_factory">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">get_task_factory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.get_task_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a task factory, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the default one is in use.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.4.4.</span></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="creating-connections">
+<h2>18.5.1.6. Creating connections<a class="headerlink" href="#creating-connections" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.create_connection">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">create_connection</code><span class="sig-paren">(</span><em>protocol_factory</em>, <em>host=None</em>, <em>port=None</em>, <em>*</em>, <em>ssl=None</em>, <em>family=0</em>, <em>proto=0</em>, <em>flags=0</em>, <em>sock=None</em>, <em>local_addr=None</em>, <em>server_hostname=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.create_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a streaming transport connection to a given Internet <em>host</em> and
+<em>port</em>: socket family <a class="reference internal" href="socket.html#socket.AF_INET" title="socket.AF_INET"><code class="xref py py-data docutils literal notranslate"><span class="pre">AF_INET</span></code></a> or
+<a class="reference internal" href="socket.html#socket.AF_INET6" title="socket.AF_INET6"><code class="xref py py-data docutils literal notranslate"><span class="pre">AF_INET6</span></code></a> depending on <em>host</em> (or <em>family</em> if specified),
+socket type <a class="reference internal" href="socket.html#socket.SOCK_STREAM" title="socket.SOCK_STREAM"><code class="xref py py-data docutils literal notranslate"><span class="pre">SOCK_STREAM</span></code></a>.  <em>protocol_factory</em> must be a
+callable returning a <a class="reference internal" href="asyncio-protocol.html#asyncio-protocol"><span class="std std-ref">protocol</span></a> instance.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a> which will try to
+establish the connection in the background.  When successful, the
+coroutine returns a <code class="docutils literal notranslate"><span class="pre">(transport,</span> <span class="pre">protocol)</span></code> pair.</p>
+<p>The chronological synopsis of the underlying operation is as follows:</p>
+<ol class="arabic simple">
+<li>The connection is established, and a <a class="reference internal" href="asyncio-protocol.html#asyncio-transport"><span class="std std-ref">transport</span></a>
+is created to represent it.</li>
+<li><em>protocol_factory</em> is called without arguments and must return a
+<a class="reference internal" href="asyncio-protocol.html#asyncio-protocol"><span class="std std-ref">protocol</span></a> instance.</li>
+<li>The protocol instance is tied to the transport, and its
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">connection_made()</span></code> method is called.</li>
+<li>The coroutine returns successfully with the <code class="docutils literal notranslate"><span class="pre">(transport,</span> <span class="pre">protocol)</span></code>
+pair.</li>
+</ol>
+<p>The created transport is an implementation-dependent bidirectional stream.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><em>protocol_factory</em> can be any kind of callable, not necessarily
+a class.  For example, if you want to use a pre-created
+protocol instance, you can pass <code class="docutils literal notranslate"><span class="pre">lambda:</span> <span class="pre">my_protocol</span></code>.</p>
+</div>
+<p>Options that change how the connection is created:</p>
+<ul>
+<li><p class="first"><em>ssl</em>: if given and not false, a SSL/TLS transport is created
+(by default a plain TCP transport is created).  If <em>ssl</em> is
+a <a class="reference internal" href="ssl.html#ssl.SSLContext" title="ssl.SSLContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">ssl.SSLContext</span></code></a> object, this context is used to create
+the transport; if <em>ssl</em> is <a class="reference internal" href="constants.html#True" title="True"><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code></a>, a context with some
+unspecified default settings is used.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="ssl.html#ssl-security"><span class="std std-ref">SSL/TLS security considerations</span></a></p>
+</div>
+</li>
+<li><p class="first"><em>server_hostname</em>, is only for use together with <em>ssl</em>,
+and sets or overrides the hostname that the target server’s certificate
+will be matched against.  By default the value of the <em>host</em> argument
+is used.  If <em>host</em> is empty, there is no default and you must pass a
+value for <em>server_hostname</em>.  If <em>server_hostname</em> is an empty
+string, hostname matching is disabled (which is a serious security
+risk, allowing for man-in-the-middle-attacks).</p>
+</li>
+<li><p class="first"><em>family</em>, <em>proto</em>, <em>flags</em> are the optional address family, protocol
+and flags to be passed through to getaddrinfo() for <em>host</em> resolution.
+If given, these should all be integers from the corresponding
+<a class="reference internal" href="socket.html#module-socket" title="socket: Low-level networking interface."><code class="xref py py-mod docutils literal notranslate"><span class="pre">socket</span></code></a> module constants.</p>
+</li>
+<li><p class="first"><em>sock</em>, if given, should be an existing, already connected
+<a class="reference internal" href="socket.html#socket.socket" title="socket.socket"><code class="xref py py-class docutils literal notranslate"><span class="pre">socket.socket</span></code></a> object to be used by the transport.
+If <em>sock</em> is given, none of <em>host</em>, <em>port</em>, <em>family</em>, <em>proto</em>, <em>flags</em>
+and <em>local_addr</em> should be specified.</p>
+</li>
+<li><p class="first"><em>local_addr</em>, if given, is a <code class="docutils literal notranslate"><span class="pre">(local_host,</span> <span class="pre">local_port)</span></code> tuple used
+to bind the socket to locally.  The <em>local_host</em> and <em>local_port</em>
+are looked up using getaddrinfo(), similarly to <em>host</em> and <em>port</em>.</p>
+</li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 3.5: </span>On Windows with <a class="reference internal" href="asyncio-eventloops.html#asyncio.ProactorEventLoop" title="asyncio.ProactorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProactorEventLoop</span></code></a>, SSL/TLS is now supported.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="asyncio-stream.html#asyncio.open_connection" title="asyncio.open_connection"><code class="xref py py-func docutils literal notranslate"><span class="pre">open_connection()</span></code></a> function can be used to get a pair of
+(<a class="reference internal" href="asyncio-stream.html#asyncio.StreamReader" title="asyncio.StreamReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamReader</span></code></a>, <a class="reference internal" href="asyncio-stream.html#asyncio.StreamWriter" title="asyncio.StreamWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamWriter</span></code></a>) instead of a protocol.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.create_datagram_endpoint">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">create_datagram_endpoint</code><span class="sig-paren">(</span><em>protocol_factory</em>, <em>local_addr=None</em>, <em>remote_addr=None</em>, <em>*</em>, <em>family=0</em>, <em>proto=0</em>, <em>flags=0</em>, <em>reuse_address=None</em>, <em>reuse_port=None</em>, <em>allow_broadcast=None</em>, <em>sock=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.create_datagram_endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create datagram connection: socket family <a class="reference internal" href="socket.html#socket.AF_INET" title="socket.AF_INET"><code class="xref py py-data docutils literal notranslate"><span class="pre">AF_INET</span></code></a> or
+<a class="reference internal" href="socket.html#socket.AF_INET6" title="socket.AF_INET6"><code class="xref py py-data docutils literal notranslate"><span class="pre">AF_INET6</span></code></a> depending on <em>host</em> (or <em>family</em> if specified),
+socket type <a class="reference internal" href="socket.html#socket.SOCK_DGRAM" title="socket.SOCK_DGRAM"><code class="xref py py-data docutils literal notranslate"><span class="pre">SOCK_DGRAM</span></code></a>. <em>protocol_factory</em> must be a
+callable returning a <a class="reference internal" href="asyncio-protocol.html#asyncio-protocol"><span class="std std-ref">protocol</span></a> instance.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a> which will try to
+establish the connection in the background.  When successful, the
+coroutine returns a <code class="docutils literal notranslate"><span class="pre">(transport,</span> <span class="pre">protocol)</span></code> pair.</p>
+<p>Options changing how the connection is created:</p>
+<ul class="simple">
+<li><em>local_addr</em>, if given, is a <code class="docutils literal notranslate"><span class="pre">(local_host,</span> <span class="pre">local_port)</span></code> tuple used
+to bind the socket to locally.  The <em>local_host</em> and <em>local_port</em>
+are looked up using <a class="reference internal" href="#asyncio.AbstractEventLoop.getaddrinfo" title="asyncio.AbstractEventLoop.getaddrinfo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getaddrinfo()</span></code></a>.</li>
+<li><em>remote_addr</em>, if given, is a <code class="docutils literal notranslate"><span class="pre">(remote_host,</span> <span class="pre">remote_port)</span></code> tuple used
+to connect the socket to a remote address.  The <em>remote_host</em> and
+<em>remote_port</em> are looked up using <a class="reference internal" href="#asyncio.AbstractEventLoop.getaddrinfo" title="asyncio.AbstractEventLoop.getaddrinfo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getaddrinfo()</span></code></a>.</li>
+<li><em>family</em>, <em>proto</em>, <em>flags</em> are the optional address family, protocol
+and flags to be passed through to <a class="reference internal" href="#asyncio.AbstractEventLoop.getaddrinfo" title="asyncio.AbstractEventLoop.getaddrinfo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getaddrinfo()</span></code></a> for <em>host</em>
+resolution. If given, these should all be integers from the
+corresponding <a class="reference internal" href="socket.html#module-socket" title="socket: Low-level networking interface."><code class="xref py py-mod docutils literal notranslate"><span class="pre">socket</span></code></a> module constants.</li>
+<li><em>reuse_address</em> tells the kernel to reuse a local socket in
+TIME_WAIT state, without waiting for its natural timeout to
+expire. If not specified will automatically be set to <code class="docutils literal notranslate"><span class="pre">True</span></code> on
+UNIX.</li>
+<li><em>reuse_port</em> tells the kernel to allow this endpoint to be bound to the
+same port as other existing endpoints are bound to, so long as they all
+set this flag when being created. This option is not supported on Windows
+and some UNIX’s. If the <code class="xref py py-data docutils literal notranslate"><span class="pre">SO_REUSEPORT</span></code> constant is not
+defined then this capability is unsupported.</li>
+<li><em>allow_broadcast</em> tells the kernel to allow this endpoint to send
+messages to the broadcast address.</li>
+<li><em>sock</em> can optionally be specified in order to use a preexisting,
+already connected, <a class="reference internal" href="socket.html#socket.socket" title="socket.socket"><code class="xref py py-class docutils literal notranslate"><span class="pre">socket.socket</span></code></a> object to be used by the
+transport. If specified, <em>local_addr</em> and <em>remote_addr</em> should be omitted
+(must be <a class="reference internal" href="constants.html#None" title="None"><code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code></a>).</li>
+</ul>
+<p>On Windows with <a class="reference internal" href="asyncio-eventloops.html#asyncio.ProactorEventLoop" title="asyncio.ProactorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProactorEventLoop</span></code></a>, this method is not supported.</p>
+<p>See <a class="reference internal" href="asyncio-protocol.html#asyncio-udp-echo-client-protocol"><span class="std std-ref">UDP echo client protocol</span></a> and
+<a class="reference internal" href="asyncio-protocol.html#asyncio-udp-echo-server-protocol"><span class="std std-ref">UDP echo server protocol</span></a> examples.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 3.4.4: </span>The <em>family</em>, <em>proto</em>, <em>flags</em>, <em>reuse_address</em>, <em>reuse_port,
+*allow_broadcast</em>, and <em>sock</em> parameters were added.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.create_unix_connection">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">create_unix_connection</code><span class="sig-paren">(</span><em>protocol_factory</em>, <em>path</em>, <em>*</em>, <em>ssl=None</em>, <em>sock=None</em>, <em>server_hostname=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.create_unix_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create UNIX connection: socket family <a class="reference internal" href="socket.html#socket.AF_UNIX" title="socket.AF_UNIX"><code class="xref py py-data docutils literal notranslate"><span class="pre">AF_UNIX</span></code></a>, socket
+type <a class="reference internal" href="socket.html#socket.SOCK_STREAM" title="socket.SOCK_STREAM"><code class="xref py py-data docutils literal notranslate"><span class="pre">SOCK_STREAM</span></code></a>. The <a class="reference internal" href="socket.html#socket.AF_UNIX" title="socket.AF_UNIX"><code class="xref py py-data docutils literal notranslate"><span class="pre">AF_UNIX</span></code></a> socket
+family is used to communicate between processes on the same machine
+efficiently.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a> which will try to
+establish the connection in the background.  When successful, the
+coroutine returns a <code class="docutils literal notranslate"><span class="pre">(transport,</span> <span class="pre">protocol)</span></code> pair.</p>
+<p><em>path</em> is the name of a UNIX domain socket, and is required unless a <em>sock</em>
+parameter is specified.  Abstract UNIX sockets, <a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, and
+<a class="reference internal" href="stdtypes.html#bytes" title="bytes"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> paths are supported.</p>
+<p>See the <a class="reference internal" href="#asyncio.AbstractEventLoop.create_connection" title="asyncio.AbstractEventLoop.create_connection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.create_connection()</span></code></a> method for parameters.</p>
+<p>Availability: UNIX.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="creating-listening-connections">
+<h2>18.5.1.7. Creating listening connections<a class="headerlink" href="#creating-listening-connections" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.create_server">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">create_server</code><span class="sig-paren">(</span><em>protocol_factory</em>, <em>host=None</em>, <em>port=None</em>, <em>*</em>, <em>family=socket.AF_UNSPEC</em>, <em>flags=socket.AI_PASSIVE</em>, <em>sock=None</em>, <em>backlog=100</em>, <em>ssl=None</em>, <em>reuse_address=None</em>, <em>reuse_port=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.create_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a TCP server (socket type <a class="reference internal" href="socket.html#socket.SOCK_STREAM" title="socket.SOCK_STREAM"><code class="xref py py-data docutils literal notranslate"><span class="pre">SOCK_STREAM</span></code></a>) bound to
+<em>host</em> and <em>port</em>.</p>
+<p>Return a <a class="reference internal" href="#asyncio.Server" title="asyncio.Server"><code class="xref py py-class docutils literal notranslate"><span class="pre">Server</span></code></a> object, its <a class="reference internal" href="#asyncio.Server.sockets" title="asyncio.Server.sockets"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sockets</span></code></a> attribute
+contains created sockets. Use the <a class="reference internal" href="#asyncio.Server.close" title="asyncio.Server.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Server.close()</span></code></a> method to stop the
+server: close listening sockets.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li>The <em>host</em> parameter can be a string, in that case the TCP server is
+bound to <em>host</em> and <em>port</em>. The <em>host</em> parameter can also be a sequence
+of strings and in that case the TCP server is bound to all hosts of the
+sequence. If <em>host</em> is an empty string or <code class="docutils literal notranslate"><span class="pre">None</span></code>, all interfaces are
+assumed and a list of multiple sockets will be returned (most likely one
+for IPv4 and another one for IPv6).</li>
+<li><em>family</em> can be set to either <a class="reference internal" href="socket.html#socket.AF_INET" title="socket.AF_INET"><code class="xref py py-data docutils literal notranslate"><span class="pre">socket.AF_INET</span></code></a> or
+<a class="reference internal" href="socket.html#socket.AF_INET6" title="socket.AF_INET6"><code class="xref py py-data docutils literal notranslate"><span class="pre">AF_INET6</span></code></a> to force the socket to use IPv4 or IPv6. If not set
+it will be determined from host (defaults to <code class="xref py py-data docutils literal notranslate"><span class="pre">socket.AF_UNSPEC</span></code>).</li>
+<li><em>flags</em> is a bitmask for <a class="reference internal" href="#asyncio.AbstractEventLoop.getaddrinfo" title="asyncio.AbstractEventLoop.getaddrinfo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getaddrinfo()</span></code></a>.</li>
+<li><em>sock</em> can optionally be specified in order to use a preexisting
+socket object. If specified, <em>host</em> and <em>port</em> should be omitted (must be
+<a class="reference internal" href="constants.html#None" title="None"><code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code></a>).</li>
+<li><em>backlog</em> is the maximum number of queued connections passed to
+<a class="reference internal" href="socket.html#socket.socket.listen" title="socket.socket.listen"><code class="xref py py-meth docutils literal notranslate"><span class="pre">listen()</span></code></a> (defaults to 100).</li>
+<li><em>ssl</em> can be set to an <a class="reference internal" href="ssl.html#ssl.SSLContext" title="ssl.SSLContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">SSLContext</span></code></a> to enable SSL over the
+accepted connections.</li>
+<li><em>reuse_address</em> tells the kernel to reuse a local socket in
+TIME_WAIT state, without waiting for its natural timeout to
+expire. If not specified will automatically be set to <code class="docutils literal notranslate"><span class="pre">True</span></code> on
+UNIX.</li>
+<li><em>reuse_port</em> tells the kernel to allow this endpoint to be bound to the
+same port as other existing endpoints are bound to, so long as they all
+set this flag when being created. This option is not supported on
+Windows.</li>
+</ul>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 3.5: </span>On Windows with <a class="reference internal" href="asyncio-eventloops.html#asyncio.ProactorEventLoop" title="asyncio.ProactorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProactorEventLoop</span></code></a>, SSL/TLS is now supported.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The function <a class="reference internal" href="asyncio-stream.html#asyncio.start_server" title="asyncio.start_server"><code class="xref py py-func docutils literal notranslate"><span class="pre">start_server()</span></code></a> creates a (<a class="reference internal" href="asyncio-stream.html#asyncio.StreamReader" title="asyncio.StreamReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamReader</span></code></a>,
+<a class="reference internal" href="asyncio-stream.html#asyncio.StreamWriter" title="asyncio.StreamWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamWriter</span></code></a>) pair and calls back a function with this pair.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 3.5.1: </span>The <em>host</em> parameter can now be a sequence of strings.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.create_unix_server">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">create_unix_server</code><span class="sig-paren">(</span><em>protocol_factory</em>, <em>path=None</em>, <em>*</em>, <em>sock=None</em>, <em>backlog=100</em>, <em>ssl=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.create_unix_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to <a class="reference internal" href="#asyncio.AbstractEventLoop.create_server" title="asyncio.AbstractEventLoop.create_server"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.create_server()</span></code></a>, but specific to the
+socket family <a class="reference internal" href="socket.html#socket.AF_UNIX" title="socket.AF_UNIX"><code class="xref py py-data docutils literal notranslate"><span class="pre">AF_UNIX</span></code></a>.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+<p>Availability: UNIX.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.BaseEventLoop.connect_accepted_socket">
+<em class="property">coroutine </em><code class="descclassname">BaseEventLoop.</code><code class="descname">connect_accepted_socket</code><span class="sig-paren">(</span><em>protocol_factory</em>, <em>sock</em>, <em>*</em>, <em>ssl=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.BaseEventLoop.connect_accepted_socket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle an accepted connection.</p>
+<p>This is used by servers that accept connections outside of
+asyncio but that use asyncio to handle them.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><em>sock</em> is a preexisting socket object returned from an <code class="docutils literal notranslate"><span class="pre">accept</span></code>
+call.</li>
+<li><em>ssl</em> can be set to an <a class="reference internal" href="ssl.html#ssl.SSLContext" title="ssl.SSLContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">SSLContext</span></code></a> to enable SSL over the
+accepted connections.</li>
+</ul>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.  When completed, the
+coroutine returns a <code class="docutils literal notranslate"><span class="pre">(transport,</span> <span class="pre">protocol)</span></code> pair.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.5.3.</span></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="watch-file-descriptors">
+<h2>18.5.1.8. Watch file descriptors<a class="headerlink" href="#watch-file-descriptors" title="Permalink to this headline">¶</a></h2>
+<p>On Windows with <a class="reference internal" href="asyncio-eventloops.html#asyncio.SelectorEventLoop" title="asyncio.SelectorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectorEventLoop</span></code></a>, only socket handles are supported
+(ex: pipe file descriptors are not supported).</p>
+<p>On Windows with <a class="reference internal" href="asyncio-eventloops.html#asyncio.ProactorEventLoop" title="asyncio.ProactorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProactorEventLoop</span></code></a>, these methods are not supported.</p>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.add_reader">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">add_reader</code><span class="sig-paren">(</span><em>fd</em>, <em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.add_reader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start watching the file descriptor for read availability and then call the
+<em>callback</em> with specified arguments.</p>
+<p><a class="reference internal" href="#asyncio-pass-keywords"><span class="std std-ref">Use functools.partial to pass keywords to the callback</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.remove_reader">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">remove_reader</code><span class="sig-paren">(</span><em>fd</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.remove_reader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop watching the file descriptor for read availability.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.add_writer">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">add_writer</code><span class="sig-paren">(</span><em>fd</em>, <em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.add_writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start watching the file descriptor for write availability and then call the
+<em>callback</em> with specified arguments.</p>
+<p><a class="reference internal" href="#asyncio-pass-keywords"><span class="std std-ref">Use functools.partial to pass keywords to the callback</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.remove_writer">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">remove_writer</code><span class="sig-paren">(</span><em>fd</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.remove_writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop watching the file descriptor for write availability.</p>
+</dd></dl>
+
+<p>The <a class="reference internal" href="#asyncio-watch-read-event"><span class="std std-ref">watch a file descriptor for read events</span></a>
+example uses the low-level <a class="reference internal" href="#asyncio.AbstractEventLoop.add_reader" title="asyncio.AbstractEventLoop.add_reader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.add_reader()</span></code></a> method to register
+the file descriptor of a socket.</p>
+</div>
+<div class="section" id="low-level-socket-operations">
+<h2>18.5.1.9. Low-level socket operations<a class="headerlink" href="#low-level-socket-operations" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.sock_recv">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">sock_recv</code><span class="sig-paren">(</span><em>sock</em>, <em>nbytes</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.sock_recv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receive data from the socket.  Modeled after blocking
+<a class="reference internal" href="socket.html#socket.socket.recv" title="socket.socket.recv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">socket.socket.recv()</span></code></a> method.</p>
+<p>The return value is a bytes object
+representing the data received.  The maximum amount of data to be received
+at once is specified by <em>nbytes</em>.</p>
+<p>With <a class="reference internal" href="asyncio-eventloops.html#asyncio.SelectorEventLoop" title="asyncio.SelectorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectorEventLoop</span></code></a> event loop, the socket <em>sock</em> must be
+non-blocking.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.sock_sendall">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">sock_sendall</code><span class="sig-paren">(</span><em>sock</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.sock_sendall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send data to the socket.  Modeled after blocking
+<a class="reference internal" href="socket.html#socket.socket.sendall" title="socket.socket.sendall"><code class="xref py py-meth docutils literal notranslate"><span class="pre">socket.socket.sendall()</span></code></a> method.</p>
+<p>The socket must be connected to a remote socket.
+This method continues to send data from <em>data</em> until either all data has
+been sent or an error occurs.  <code class="docutils literal notranslate"><span class="pre">None</span></code> is returned on success.  On error,
+an exception is raised, and there is no way to determine how much data, if
+any, was successfully processed by the receiving end of the connection.</p>
+<p>With <a class="reference internal" href="asyncio-eventloops.html#asyncio.SelectorEventLoop" title="asyncio.SelectorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectorEventLoop</span></code></a> event loop, the socket <em>sock</em> must be
+non-blocking.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.sock_connect">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">sock_connect</code><span class="sig-paren">(</span><em>sock</em>, <em>address</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.sock_connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to a remote socket at <em>address</em>.  Modeled after
+blocking <a class="reference internal" href="socket.html#socket.socket.connect" title="socket.socket.connect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">socket.socket.connect()</span></code></a> method.</p>
+<p>With <a class="reference internal" href="asyncio-eventloops.html#asyncio.SelectorEventLoop" title="asyncio.SelectorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectorEventLoop</span></code></a> event loop, the socket <em>sock</em> must be
+non-blocking.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 3.5.2: </span><code class="docutils literal notranslate"><span class="pre">address</span></code> no longer needs to be resolved.  <code class="docutils literal notranslate"><span class="pre">sock_connect</span></code>
+will try to check if the <em>address</em> is already resolved by calling
+<a class="reference internal" href="socket.html#socket.inet_pton" title="socket.inet_pton"><code class="xref py py-func docutils literal notranslate"><span class="pre">socket.inet_pton()</span></code></a>.  If not,
+<a class="reference internal" href="#asyncio.AbstractEventLoop.getaddrinfo" title="asyncio.AbstractEventLoop.getaddrinfo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.getaddrinfo()</span></code></a> will be used to resolve the
+<em>address</em>.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#asyncio.AbstractEventLoop.create_connection" title="asyncio.AbstractEventLoop.create_connection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.create_connection()</span></code></a>
+and  <a class="reference internal" href="asyncio-stream.html#asyncio.open_connection" title="asyncio.open_connection"><code class="xref py py-func docutils literal notranslate"><span class="pre">asyncio.open_connection()</span></code></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.sock_accept">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">sock_accept</code><span class="sig-paren">(</span><em>sock</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.sock_accept" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept a connection.  Modeled after blocking
+<a class="reference internal" href="socket.html#socket.socket.accept" title="socket.socket.accept"><code class="xref py py-meth docutils literal notranslate"><span class="pre">socket.socket.accept()</span></code></a>.</p>
+<p>The socket must be bound to an address and listening
+for connections. The return value is a pair <code class="docutils literal notranslate"><span class="pre">(conn,</span> <span class="pre">address)</span></code> where <em>conn</em>
+is a <em>new</em> socket object usable to send and receive data on the connection,
+and <em>address</em> is the address bound to the socket on the other end of the
+connection.</p>
+<p>The socket <em>sock</em> must be non-blocking.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#asyncio.AbstractEventLoop.create_server" title="asyncio.AbstractEventLoop.create_server"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.create_server()</span></code></a> and <a class="reference internal" href="asyncio-stream.html#asyncio.start_server" title="asyncio.start_server"><code class="xref py py-func docutils literal notranslate"><span class="pre">start_server()</span></code></a>.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="resolve-host-name">
+<h2>18.5.1.10. Resolve host name<a class="headerlink" href="#resolve-host-name" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.getaddrinfo">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">getaddrinfo</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>*</em>, <em>family=0</em>, <em>type=0</em>, <em>proto=0</em>, <em>flags=0</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.getaddrinfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>, similar to
+<a class="reference internal" href="socket.html#socket.getaddrinfo" title="socket.getaddrinfo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">socket.getaddrinfo()</span></code></a> function but non-blocking.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.getnameinfo">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">getnameinfo</code><span class="sig-paren">(</span><em>sockaddr</em>, <em>flags=0</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.getnameinfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>, similar to
+<a class="reference internal" href="socket.html#socket.getnameinfo" title="socket.getnameinfo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">socket.getnameinfo()</span></code></a> function but non-blocking.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="connect-pipes">
+<h2>18.5.1.11. Connect pipes<a class="headerlink" href="#connect-pipes" title="Permalink to this headline">¶</a></h2>
+<p>On Windows with <a class="reference internal" href="asyncio-eventloops.html#asyncio.SelectorEventLoop" title="asyncio.SelectorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectorEventLoop</span></code></a>, these methods are not supported.
+Use <a class="reference internal" href="asyncio-eventloops.html#asyncio.ProactorEventLoop" title="asyncio.ProactorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProactorEventLoop</span></code></a> to support pipes on Windows.</p>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.connect_read_pipe">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">connect_read_pipe</code><span class="sig-paren">(</span><em>protocol_factory</em>, <em>pipe</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.connect_read_pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register read pipe in eventloop.</p>
+<p><em>protocol_factory</em> should instantiate object with <a class="reference internal" href="asyncio-protocol.html#asyncio.Protocol" title="asyncio.Protocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></a>
+interface.  <em>pipe</em> is a <a class="reference internal" href="../glossary.html#term-file-object"><span class="xref std std-term">file-like object</span></a>.
+Return pair <code class="docutils literal notranslate"><span class="pre">(transport,</span> <span class="pre">protocol)</span></code>, where <em>transport</em> supports the
+<a class="reference internal" href="asyncio-protocol.html#asyncio.ReadTransport" title="asyncio.ReadTransport"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReadTransport</span></code></a> interface.</p>
+<p>With <a class="reference internal" href="asyncio-eventloops.html#asyncio.SelectorEventLoop" title="asyncio.SelectorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectorEventLoop</span></code></a> event loop, the <em>pipe</em> is set to
+non-blocking mode.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.connect_write_pipe">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">connect_write_pipe</code><span class="sig-paren">(</span><em>protocol_factory</em>, <em>pipe</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.connect_write_pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register write pipe in eventloop.</p>
+<p><em>protocol_factory</em> should instantiate object with <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseProtocol</span></code>
+interface. <em>pipe</em> is <a class="reference internal" href="../glossary.html#term-file-object"><span class="xref std std-term">file-like object</span></a>.
+Return pair <code class="docutils literal notranslate"><span class="pre">(transport,</span> <span class="pre">protocol)</span></code>, where <em>transport</em> supports
+<a class="reference internal" href="asyncio-protocol.html#asyncio.WriteTransport" title="asyncio.WriteTransport"><code class="xref py py-class docutils literal notranslate"><span class="pre">WriteTransport</span></code></a> interface.</p>
+<p>With <a class="reference internal" href="asyncio-eventloops.html#asyncio.SelectorEventLoop" title="asyncio.SelectorEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectorEventLoop</span></code></a> event loop, the <em>pipe</em> is set to
+non-blocking mode.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="asyncio-subprocess.html#asyncio.AbstractEventLoop.subprocess_exec" title="asyncio.AbstractEventLoop.subprocess_exec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.subprocess_exec()</span></code></a> and
+<a class="reference internal" href="asyncio-subprocess.html#asyncio.AbstractEventLoop.subprocess_shell" title="asyncio.AbstractEventLoop.subprocess_shell"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.subprocess_shell()</span></code></a> methods.</p>
+</div>
+</div>
+<div class="section" id="unix-signals">
+<h2>18.5.1.12. UNIX signals<a class="headerlink" href="#unix-signals" title="Permalink to this headline">¶</a></h2>
+<p>Availability: UNIX only.</p>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.add_signal_handler">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">add_signal_handler</code><span class="sig-paren">(</span><em>signum</em>, <em>callback</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.add_signal_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a handler for a signal.</p>
+<p>Raise <a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if the signal number is invalid or uncatchable.
+Raise <a class="reference internal" href="exceptions.html#RuntimeError" title="RuntimeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> if there is a problem setting up the handler.</p>
+<p><a class="reference internal" href="#asyncio-pass-keywords"><span class="std std-ref">Use functools.partial to pass keywords to the callback</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.remove_signal_handler">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">remove_signal_handler</code><span class="sig-paren">(</span><em>sig</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.remove_signal_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a handler for a signal.</p>
+<p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if a signal handler was removed, <code class="docutils literal notranslate"><span class="pre">False</span></code> if not.</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="signal.html#module-signal" title="signal: Set handlers for asynchronous events."><code class="xref py py-mod docutils literal notranslate"><span class="pre">signal</span></code></a> module.</p>
+</div>
+</div>
+<div class="section" id="executor">
+<h2>18.5.1.13. Executor<a class="headerlink" href="#executor" title="Permalink to this headline">¶</a></h2>
+<p>Call a function in an <a class="reference internal" href="concurrent.futures.html#concurrent.futures.Executor" title="concurrent.futures.Executor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Executor</span></code></a> (pool of threads or
+pool of processes). By default, an event loop uses a thread pool executor
+(<a class="reference internal" href="concurrent.futures.html#concurrent.futures.ThreadPoolExecutor" title="concurrent.futures.ThreadPoolExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ThreadPoolExecutor</span></code></a>).</p>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.run_in_executor">
+<em class="property">coroutine </em><code class="descclassname">AbstractEventLoop.</code><code class="descname">run_in_executor</code><span class="sig-paren">(</span><em>executor</em>, <em>func</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.run_in_executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arrange for a <em>func</em> to be called in the specified executor.</p>
+<p>The <em>executor</em> argument should be an <a class="reference internal" href="concurrent.futures.html#concurrent.futures.Executor" title="concurrent.futures.Executor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Executor</span></code></a>
+instance. The default executor is used if <em>executor</em> is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p><a class="reference internal" href="#asyncio-pass-keywords"><span class="std std-ref">Use functools.partial to pass keywords to the *func*</span></a>.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 3.5.3: </span><code class="xref py py-meth docutils literal notranslate"><span class="pre">BaseEventLoop.run_in_executor()</span></code> no longer configures the
+<code class="docutils literal notranslate"><span class="pre">max_workers</span></code> of the thread pool executor it creates, instead
+leaving it up to the thread pool executor
+(<a class="reference internal" href="concurrent.futures.html#concurrent.futures.ThreadPoolExecutor" title="concurrent.futures.ThreadPoolExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ThreadPoolExecutor</span></code></a>) to set the
+default.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.set_default_executor">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">set_default_executor</code><span class="sig-paren">(</span><em>executor</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.set_default_executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default executor used by <a class="reference internal" href="#asyncio.AbstractEventLoop.run_in_executor" title="asyncio.AbstractEventLoop.run_in_executor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run_in_executor()</span></code></a>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="error-handling-api">
+<h2>18.5.1.14. Error Handling API<a class="headerlink" href="#error-handling-api" title="Permalink to this headline">¶</a></h2>
+<p>Allows customizing how exceptions are handled in the event loop.</p>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.set_exception_handler">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">set_exception_handler</code><span class="sig-paren">(</span><em>handler</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.set_exception_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set <em>handler</em> as the new event loop exception handler.</p>
+<p>If <em>handler</em> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the default exception handler will
+be set.</p>
+<p>If <em>handler</em> is a callable object, it should have a
+matching signature to <code class="docutils literal notranslate"><span class="pre">(loop,</span> <span class="pre">context)</span></code>, where <code class="docutils literal notranslate"><span class="pre">loop</span></code>
+will be a reference to the active event loop, <code class="docutils literal notranslate"><span class="pre">context</span></code>
+will be a <code class="docutils literal notranslate"><span class="pre">dict</span></code> object (see <a class="reference internal" href="#asyncio.AbstractEventLoop.call_exception_handler" title="asyncio.AbstractEventLoop.call_exception_handler"><code class="xref py py-meth docutils literal notranslate"><span class="pre">call_exception_handler()</span></code></a>
+documentation for details about context).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.get_exception_handler">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">get_exception_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.get_exception_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the exception handler, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the default one
+is in use.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.5.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.default_exception_handler">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">default_exception_handler</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.default_exception_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default exception handler.</p>
+<p>This is called when an exception occurs and no exception
+handler is set, and can be called by a custom exception
+handler that wants to defer to the default behavior.</p>
+<p><em>context</em> parameter has the same meaning as in
+<a class="reference internal" href="#asyncio.AbstractEventLoop.call_exception_handler" title="asyncio.AbstractEventLoop.call_exception_handler"><code class="xref py py-meth docutils literal notranslate"><span class="pre">call_exception_handler()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.call_exception_handler">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">call_exception_handler</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.call_exception_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call the current event loop exception handler.</p>
+<p><em>context</em> is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> object containing the following keys
+(new keys may be introduced later):</p>
+<ul class="simple">
+<li>‘message’: Error message;</li>
+<li>‘exception’ (optional): Exception object;</li>
+<li>‘future’ (optional): <a class="reference internal" href="asyncio-task.html#asyncio.Future" title="asyncio.Future"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncio.Future</span></code></a> instance;</li>
+<li>‘handle’ (optional): <a class="reference internal" href="#asyncio.Handle" title="asyncio.Handle"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncio.Handle</span></code></a> instance;</li>
+<li>‘protocol’ (optional): <a class="reference internal" href="asyncio-protocol.html#asyncio-protocol"><span class="std std-ref">Protocol</span></a> instance;</li>
+<li>‘transport’ (optional): <a class="reference internal" href="asyncio-protocol.html#asyncio-transport"><span class="std std-ref">Transport</span></a> instance;</li>
+<li>‘socket’ (optional): <a class="reference internal" href="socket.html#socket.socket" title="socket.socket"><code class="xref py py-class docutils literal notranslate"><span class="pre">socket.socket</span></code></a> instance.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note: this method should not be overloaded in subclassed
+event loops.  For any custom exception handling, use
+<a class="reference internal" href="#asyncio.AbstractEventLoop.set_exception_handler" title="asyncio.AbstractEventLoop.set_exception_handler"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_exception_handler()</span></code></a> method.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="debug-mode">
+<h2>18.5.1.15. Debug mode<a class="headerlink" href="#debug-mode" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.get_debug">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">get_debug</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.get_debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the debug mode (<a class="reference internal" href="functions.html#bool" title="bool"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) of the event loop.</p>
+<p>The default value is <code class="docutils literal notranslate"><span class="pre">True</span></code> if the environment variable
+<span class="target" id="index-0"></span><a class="reference internal" href="../using/cmdline.html#envvar-PYTHONASYNCIODEBUG"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PYTHONASYNCIODEBUG</span></code></a> is set to a non-empty string, <code class="docutils literal notranslate"><span class="pre">False</span></code>
+otherwise.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.4.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.AbstractEventLoop.set_debug">
+<code class="descclassname">AbstractEventLoop.</code><code class="descname">set_debug</code><span class="sig-paren">(</span><em>enabled: bool</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.AbstractEventLoop.set_debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the debug mode of the event loop.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.4.2.</span></p>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="asyncio-dev.html#asyncio-debug-mode"><span class="std std-ref">debug mode of asyncio</span></a>.</p>
+</div>
+</div>
+<div class="section" id="server">
+<h2>18.5.1.16. Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncio.Server">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">Server</code><a class="headerlink" href="#asyncio.Server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Server listening on sockets.</p>
+<p>Object created by the <a class="reference internal" href="#asyncio.AbstractEventLoop.create_server" title="asyncio.AbstractEventLoop.create_server"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.create_server()</span></code></a> method and the
+<a class="reference internal" href="asyncio-stream.html#asyncio.start_server" title="asyncio.start_server"><code class="xref py py-func docutils literal notranslate"><span class="pre">start_server()</span></code></a> function. Don’t instantiate the class directly.</p>
+<dl class="method">
+<dt id="asyncio.Server.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Server.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop serving: close listening sockets and set the <a class="reference internal" href="#asyncio.Server.sockets" title="asyncio.Server.sockets"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sockets</span></code></a>
+attribute to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>The sockets that represent existing incoming client connections are left
+open.</p>
+<p>The server is closed asynchronously, use the <a class="reference internal" href="#asyncio.Server.wait_closed" title="asyncio.Server.wait_closed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wait_closed()</span></code></a>
+coroutine to wait until the server is closed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Server.wait_closed">
+<em class="property">coroutine </em><code class="descname">wait_closed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Server.wait_closed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the <a class="reference internal" href="#asyncio.Server.close" title="asyncio.Server.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> method completes.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="asyncio.Server.sockets">
+<code class="descname">sockets</code><a class="headerlink" href="#asyncio.Server.sockets" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of <a class="reference internal" href="socket.html#socket.socket" title="socket.socket"><code class="xref py py-class docutils literal notranslate"><span class="pre">socket.socket</span></code></a> objects the server is listening to, or
+<code class="docutils literal notranslate"><span class="pre">None</span></code> if the server is closed.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="handle">
+<h2>18.5.1.17. Handle<a class="headerlink" href="#handle" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncio.Handle">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">Handle</code><a class="headerlink" href="#asyncio.Handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>A callback wrapper object returned by <a class="reference internal" href="#asyncio.AbstractEventLoop.call_soon" title="asyncio.AbstractEventLoop.call_soon"><code class="xref py py-func docutils literal notranslate"><span class="pre">AbstractEventLoop.call_soon()</span></code></a>,
+<a class="reference internal" href="#asyncio.AbstractEventLoop.call_soon_threadsafe" title="asyncio.AbstractEventLoop.call_soon_threadsafe"><code class="xref py py-func docutils literal notranslate"><span class="pre">AbstractEventLoop.call_soon_threadsafe()</span></code></a>, <a class="reference internal" href="#asyncio.AbstractEventLoop.call_later" title="asyncio.AbstractEventLoop.call_later"><code class="xref py py-func docutils literal notranslate"><span class="pre">AbstractEventLoop.call_later()</span></code></a>,
+and <a class="reference internal" href="#asyncio.AbstractEventLoop.call_at" title="asyncio.AbstractEventLoop.call_at"><code class="xref py py-func docutils literal notranslate"><span class="pre">AbstractEventLoop.call_at()</span></code></a>.</p>
+<dl class="method">
+<dt id="asyncio.Handle.cancel">
+<code class="descname">cancel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Handle.cancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel the call.  If the callback is already canceled or executed,
+this method has no effect.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="event-loop-examples">
+<h2>18.5.1.18. Event loop examples<a class="headerlink" href="#event-loop-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="hello-world-with-call-soon">
+<span id="asyncio-hello-world-callback"></span><h3>18.5.1.18.1. Hello World with call_soon()<a class="headerlink" href="#hello-world-with-call-soon" title="Permalink to this headline">¶</a></h3>
+<p>Example using the <a class="reference internal" href="#asyncio.AbstractEventLoop.call_soon" title="asyncio.AbstractEventLoop.call_soon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.call_soon()</span></code></a> method to schedule a
+callback. The callback displays <code class="docutils literal notranslate"><span class="pre">&quot;Hello</span> <span class="pre">World&quot;</span></code> and then stops the event
+loop:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">loop</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello World&#39;</span><span class="p">)</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+
+<span class="c1"># Schedule a call to hello_world()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="n">hello_world</span><span class="p">,</span> <span class="n">loop</span><span class="p">)</span>
+
+<span class="c1"># Blocking call interrupted by loop.stop()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="asyncio-task.html#asyncio-hello-world-coroutine"><span class="std std-ref">Hello World coroutine</span></a> example
+uses a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</div>
+</div>
+<div class="section" id="display-the-current-date-with-call-later">
+<span id="asyncio-date-callback"></span><h3>18.5.1.18.2. Display the current date with call_later()<a class="headerlink" href="#display-the-current-date-with-call-later" title="Permalink to this headline">¶</a></h3>
+<p>Example of callback displaying the current date every second. The callback uses
+the <a class="reference internal" href="#asyncio.AbstractEventLoop.call_later" title="asyncio.AbstractEventLoop.call_later"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.call_later()</span></code></a> method to reschedule itself during 5
+seconds, and then stops the event loop:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="k">def</span> <span class="nf">display_date</span><span class="p">(</span><span class="n">end_time</span><span class="p">,</span> <span class="n">loop</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">loop</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">end_time</span><span class="p">:</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">call_later</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">display_date</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">loop</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+
+<span class="c1"># Schedule the first call to display_date()</span>
+<span class="n">end_time</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mf">5.0</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="n">display_date</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">loop</span><span class="p">)</span>
+
+<span class="c1"># Blocking call interrupted by loop.stop()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="asyncio-task.html#asyncio-date-coroutine"><span class="std std-ref">coroutine displaying the current date</span></a> example uses a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</div>
+</div>
+<div class="section" id="watch-a-file-descriptor-for-read-events">
+<span id="asyncio-watch-read-event"></span><h3>18.5.1.18.3. Watch a file descriptor for read events<a class="headerlink" href="#watch-a-file-descriptor-for-read-events" title="Permalink to this headline">¶</a></h3>
+<p>Wait until a file descriptor received some data using the
+<a class="reference internal" href="#asyncio.AbstractEventLoop.add_reader" title="asyncio.AbstractEventLoop.add_reader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.add_reader()</span></code></a> method and then close the event loop:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">socket</span> <span class="k">import</span> <span class="n">socketpair</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">asyncio.windows_utils</span> <span class="k">import</span> <span class="n">socketpair</span>
+
+<span class="c1"># Create a pair of connected file descriptors</span>
+<span class="n">rsock</span><span class="p">,</span> <span class="n">wsock</span> <span class="o">=</span> <span class="n">socketpair</span><span class="p">()</span>
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">reader</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">rsock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Received:&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+    <span class="c1"># We are done: unregister the file descriptor</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">remove_reader</span><span class="p">(</span><span class="n">rsock</span><span class="p">)</span>
+    <span class="c1"># Stop the event loop</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="c1"># Register the file descriptor for read event</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">add_reader</span><span class="p">(</span><span class="n">rsock</span><span class="p">,</span> <span class="n">reader</span><span class="p">)</span>
+
+<span class="c1"># Simulate the reception of data from the network</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="n">wsock</span><span class="o">.</span><span class="n">send</span><span class="p">,</span> <span class="s1">&#39;abc&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+
+<span class="c1"># Run the event loop</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+
+<span class="c1"># We are done, close sockets and the event loop</span>
+<span class="n">rsock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">wsock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p>The <a class="reference internal" href="asyncio-protocol.html#asyncio-register-socket"><span class="std std-ref">register an open socket to wait for data using a protocol</span></a> example uses a low-level protocol created by the
+<a class="reference internal" href="#asyncio.AbstractEventLoop.create_connection" title="asyncio.AbstractEventLoop.create_connection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.create_connection()</span></code></a> method.</p>
+<p class="last">The <a class="reference internal" href="asyncio-stream.html#asyncio-register-socket-streams"><span class="std std-ref">register an open socket to wait for data using streams</span></a> example uses high-level streams
+created by the <a class="reference internal" href="asyncio-stream.html#asyncio.open_connection" title="asyncio.open_connection"><code class="xref py py-func docutils literal notranslate"><span class="pre">open_connection()</span></code></a> function in a coroutine.</p>
+</div>
+</div>
+<div class="section" id="set-signal-handlers-for-sigint-and-sigterm">
+<h3>18.5.1.18.4. Set signal handlers for SIGINT and SIGTERM<a class="headerlink" href="#set-signal-handlers-for-sigint-and-sigterm" title="Permalink to this headline">¶</a></h3>
+<p>Register handlers for signals <code class="xref py py-data docutils literal notranslate"><span class="pre">SIGINT</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">SIGTERM</span></code> using
+the <a class="reference internal" href="#asyncio.AbstractEventLoop.add_signal_handler" title="asyncio.AbstractEventLoop.add_signal_handler"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.add_signal_handler()</span></code></a> method:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+
+<span class="k">def</span> <span class="nf">ask_exit</span><span class="p">(</span><span class="n">signame</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;got signal </span><span class="si">%s</span><span class="s2">: exit&quot;</span> <span class="o">%</span> <span class="n">signame</span><span class="p">)</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">signame</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;SIGINT&#39;</span><span class="p">,</span> <span class="s1">&#39;SIGTERM&#39;</span><span class="p">):</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">add_signal_handler</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">signame</span><span class="p">),</span>
+                            <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">ask_exit</span><span class="p">,</span> <span class="n">signame</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Event loop running forever, press Ctrl+C to interrupt.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pid </span><span class="si">%s</span><span class="s2">: send SIGINT or SIGTERM to exit.&quot;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This example only works on UNIX.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">18.5.1. Base Event Loop</a><ul>
+<li><a class="reference internal" href="#run-an-event-loop">18.5.1.1. Run an event loop</a></li>
+<li><a class="reference internal" href="#calls">18.5.1.2. Calls</a></li>
+<li><a class="reference internal" href="#delayed-calls">18.5.1.3. Delayed calls</a></li>
+<li><a class="reference internal" href="#futures">18.5.1.4. Futures</a></li>
+<li><a class="reference internal" href="#tasks">18.5.1.5. Tasks</a></li>
+<li><a class="reference internal" href="#creating-connections">18.5.1.6. Creating connections</a></li>
+<li><a class="reference internal" href="#creating-listening-connections">18.5.1.7. Creating listening connections</a></li>
+<li><a class="reference internal" href="#watch-file-descriptors">18.5.1.8. Watch file descriptors</a></li>
+<li><a class="reference internal" href="#low-level-socket-operations">18.5.1.9. Low-level socket operations</a></li>
+<li><a class="reference internal" href="#resolve-host-name">18.5.1.10. Resolve host name</a></li>
+<li><a class="reference internal" href="#connect-pipes">18.5.1.11. Connect pipes</a></li>
+<li><a class="reference internal" href="#unix-signals">18.5.1.12. UNIX signals</a></li>
+<li><a class="reference internal" href="#executor">18.5.1.13. Executor</a></li>
+<li><a class="reference internal" href="#error-handling-api">18.5.1.14. Error Handling API</a></li>
+<li><a class="reference internal" href="#debug-mode">18.5.1.15. Debug mode</a></li>
+<li><a class="reference internal" href="#server">18.5.1.16. Server</a></li>
+<li><a class="reference internal" href="#handle">18.5.1.17. Handle</a></li>
+<li><a class="reference internal" href="#event-loop-examples">18.5.1.18. Event loop examples</a><ul>
+<li><a class="reference internal" href="#hello-world-with-call-soon">18.5.1.18.1. Hello World with call_soon()</a></li>
+<li><a class="reference internal" href="#display-the-current-date-with-call-later">18.5.1.18.2. Display the current date with call_later()</a></li>
+<li><a class="reference internal" href="#watch-a-file-descriptor-for-read-events">18.5.1.18.3. Watch a file descriptor for read events</a></li>
+<li><a class="reference internal" href="#set-signal-handlers-for-sigint-and-sigterm">18.5.1.18.4. Set signal handlers for SIGINT and SIGTERM</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="asyncio.html"
+                        title="previous chapter">18.5. <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> — Asynchronous I/O, event loop, coroutines and tasks</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="asyncio-eventloops.html"
+                        title="next chapter">18.5.2. Event loops</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Report a Bug</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/3.6/Doc/library/asyncio-eventloop.rst"
+            rel="nofollow">Show Source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="asyncio-eventloops.html" title="18.5.2. Event loops"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="asyncio.html" title="18.5. asyncio — Asynchronous I/O, event loop, coroutines and tasks"
+             >previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >The Python Standard Library</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="ipc.html" >18. Interprocess Communication and Networking</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="asyncio.html" >18.5. <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> — Asynchronous I/O, event loop, coroutines and tasks</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../copyright.html">Copyright</a> 2001-2018, Python Software Foundation.
+    <br />
+    The Python Software Foundation is a non-profit corporation.
+    <a href="https://www.python.org/psf/donations/">Please donate.</a>
+    <br />
+    Last updated on May 17, 2018.
+    <a href="../bugs.html">Found a bug</a>?
+    <br />
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.7.4.
+    </div>
+
+  </body>
+</html>

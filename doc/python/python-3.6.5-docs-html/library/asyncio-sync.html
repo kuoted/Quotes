@@ -1,0 +1,484 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>18.5.7. Synchronization primitives &#8212; Python 3.6.5 documentation</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Python 3.6.5 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="18.5.8. Queues" href="asyncio-queue.html" />
+    <link rel="prev" title="18.5.6. Subprocess" href="asyncio-subprocess.html" />
+    <link rel="shortcut icon" type="image/png" href="../_static/py.png" />
+    <link rel="canonical" href="https://docs.python.org/3/library/asyncio-sync.html" />
+    
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+    
+    
+ 
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="asyncio-queue.html" title="18.5.8. Queues"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="asyncio-subprocess.html" title="18.5.6. Subprocess"
+             accesskey="P">previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >The Python Standard Library</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="ipc.html" >18. Interprocess Communication and Networking</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="asyncio.html" accesskey="U">18.5. <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> — Asynchronous I/O, event loop, coroutines and tasks</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="synchronization-primitives">
+<span id="asyncio-sync"></span><h1>18.5.7. Synchronization primitives<a class="headerlink" href="#synchronization-primitives" title="Permalink to this headline">¶</a></h1>
+<p><strong>Source code:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.6/Lib/asyncio/locks.py">Lib/asyncio/locks.py</a></p>
+<p>Locks:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#asyncio.Lock" title="asyncio.Lock"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lock</span></code></a></li>
+<li><a class="reference internal" href="#asyncio.Event" title="asyncio.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a></li>
+<li><a class="reference internal" href="#asyncio.Condition" title="asyncio.Condition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Condition</span></code></a></li>
+</ul>
+<p>Semaphores:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#asyncio.Semaphore" title="asyncio.Semaphore"><code class="xref py py-class docutils literal notranslate"><span class="pre">Semaphore</span></code></a></li>
+<li><a class="reference internal" href="#asyncio.BoundedSemaphore" title="asyncio.BoundedSemaphore"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundedSemaphore</span></code></a></li>
+</ul>
+<p>asyncio lock API was designed to be close to classes of the <a class="reference internal" href="threading.html#module-threading" title="threading: Thread-based parallelism."><code class="xref py py-mod docutils literal notranslate"><span class="pre">threading</span></code></a>
+module (<a class="reference internal" href="threading.html#threading.Lock" title="threading.Lock"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lock</span></code></a>, <a class="reference internal" href="threading.html#threading.Event" title="threading.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">Event</span></code></a>,
+<a class="reference internal" href="threading.html#threading.Condition" title="threading.Condition"><code class="xref py py-class docutils literal notranslate"><span class="pre">Condition</span></code></a>, <a class="reference internal" href="threading.html#threading.Semaphore" title="threading.Semaphore"><code class="xref py py-class docutils literal notranslate"><span class="pre">Semaphore</span></code></a>,
+<a class="reference internal" href="threading.html#threading.BoundedSemaphore" title="threading.BoundedSemaphore"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundedSemaphore</span></code></a>), but it has no <em>timeout</em> parameter. The
+<a class="reference internal" href="asyncio-task.html#asyncio.wait_for" title="asyncio.wait_for"><code class="xref py py-func docutils literal notranslate"><span class="pre">asyncio.wait_for()</span></code></a> function can be used to cancel a task after a timeout.</p>
+<div class="section" id="locks">
+<h2>18.5.7.1. Locks<a class="headerlink" href="#locks" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="lock">
+<h3>18.5.7.1.1. Lock<a class="headerlink" href="#lock" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="asyncio.Lock">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">Lock</code><span class="sig-paren">(</span><em>*</em>, <em>loop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Primitive lock objects.</p>
+<p>A primitive lock is a synchronization primitive that is not owned by a
+particular coroutine when locked.  A primitive lock is in one of two states,
+‘locked’ or ‘unlocked’.</p>
+<p>It is created in the unlocked state.  It has two basic methods, <a class="reference internal" href="#asyncio.Lock.acquire" title="asyncio.Lock.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a>
+and <a class="reference internal" href="#asyncio.Lock.release" title="asyncio.Lock.release"><code class="xref py py-meth docutils literal notranslate"><span class="pre">release()</span></code></a>.  When the state is unlocked, acquire() changes the state to
+locked and returns immediately.  When the state is locked, acquire() blocks
+until a call to release() in another coroutine changes it to unlocked, then
+the acquire() call resets it to locked and returns.  The release() method
+should only be called in the locked state; it changes the state to unlocked
+and returns immediately.  If an attempt is made to release an unlocked lock,
+a <a class="reference internal" href="exceptions.html#RuntimeError" title="RuntimeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> will be raised.</p>
+<p>When more than one coroutine is blocked in acquire() waiting for the state
+to turn to unlocked, only one coroutine proceeds when a release() call
+resets the state to unlocked; first coroutine which is blocked in acquire()
+is being processed.</p>
+<p><a class="reference internal" href="#asyncio.Lock.acquire" title="asyncio.Lock.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a> is a coroutine and should be called with <code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span></code>.</p>
+<p>Locks also support the context management protocol.  <code class="docutils literal notranslate"><span class="pre">(yield</span> <span class="pre">from</span> <span class="pre">lock)</span></code>
+should be used as the context manager expression.</p>
+<p>This class is <a class="reference internal" href="asyncio-dev.html#asyncio-multithreading"><span class="std std-ref">not thread safe</span></a>.</p>
+<p>Usage:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+<span class="o">...</span>
+<span class="k">yield from</span> <span class="n">lock</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Context manager usage:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+<span class="o">...</span>
+<span class="k">with</span> <span class="p">(</span><span class="k">yield from</span> <span class="n">lock</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>Lock objects can be tested for locking state:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">lock</span><span class="o">.</span><span class="n">locked</span><span class="p">():</span>
+    <span class="k">yield from</span> <span class="n">lock</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># lock is acquired</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="asyncio.Lock.locked">
+<code class="descname">locked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Lock.locked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the lock is acquired.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Lock.acquire">
+<em class="property">coroutine </em><code class="descname">acquire</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Lock.acquire" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire a lock.</p>
+<p>This method blocks until the lock is unlocked, then sets it to locked and
+returns <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Lock.release">
+<code class="descname">release</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Lock.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Release a lock.</p>
+<p>When the lock is locked, reset it to unlocked, and return.  If any other
+coroutines are blocked waiting for the lock to become unlocked, allow
+exactly one of them to proceed.</p>
+<p>When invoked on an unlocked lock, a <a class="reference internal" href="exceptions.html#RuntimeError" title="RuntimeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> is raised.</p>
+<p>There is no return value.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="event">
+<h3>18.5.7.1.2. Event<a class="headerlink" href="#event" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="asyncio.Event">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>*</em>, <em>loop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Event" title="Permalink to this definition">¶</a></dt>
+<dd><p>An Event implementation, asynchronous equivalent to <a class="reference internal" href="threading.html#threading.Event" title="threading.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Event</span></code></a>.</p>
+<p>Class implementing event objects. An event manages a flag that can be set to
+true with the <a class="reference internal" href="stdtypes.html#set" title="set"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set()</span></code></a> method and reset to false with the <a class="reference internal" href="#asyncio.Event.clear" title="asyncio.Event.clear"><code class="xref py py-meth docutils literal notranslate"><span class="pre">clear()</span></code></a>
+method.  The <a class="reference internal" href="asyncio-task.html#asyncio.wait" title="asyncio.wait"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wait()</span></code></a> method blocks until the flag is true. The flag is
+initially false.</p>
+<p>This class is <a class="reference internal" href="asyncio-dev.html#asyncio-multithreading"><span class="std std-ref">not thread safe</span></a>.</p>
+<dl class="method">
+<dt id="asyncio.Event.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Event.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the internal flag to false. Subsequently, coroutines calling
+<a class="reference internal" href="asyncio-task.html#asyncio.wait" title="asyncio.wait"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wait()</span></code></a> will block until <a class="reference internal" href="stdtypes.html#set" title="set"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set()</span></code></a> is called to set the internal
+flag to true again.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Event.is_set">
+<code class="descname">is_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Event.is_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if and only if the internal flag is true.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Event.set">
+<code class="descname">set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Event.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the internal flag to true. All coroutines waiting for it to become
+true are awakened. Coroutine that call <a class="reference internal" href="asyncio-task.html#asyncio.wait" title="asyncio.wait"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wait()</span></code></a> once the flag is true
+will not block at all.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Event.wait">
+<em class="property">coroutine </em><code class="descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Event.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Block until the internal flag is true.</p>
+<p>If the internal flag is true on entry, return <code class="docutils literal notranslate"><span class="pre">True</span></code> immediately.
+Otherwise, block until another coroutine calls <a class="reference internal" href="stdtypes.html#set" title="set"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set()</span></code></a> to set the
+flag to true, then return <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="condition">
+<h3>18.5.7.1.3. Condition<a class="headerlink" href="#condition" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="asyncio.Condition">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">Condition</code><span class="sig-paren">(</span><em>lock=None</em>, <em>*</em>, <em>loop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Condition implementation, asynchronous equivalent to
+<a class="reference internal" href="threading.html#threading.Condition" title="threading.Condition"><code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Condition</span></code></a>.</p>
+<p>This class implements condition variable objects. A condition variable
+allows one or more coroutines to wait until they are notified by another
+coroutine.</p>
+<p>If the <em>lock</em> argument is given and not <code class="docutils literal notranslate"><span class="pre">None</span></code>, it must be a <a class="reference internal" href="#asyncio.Lock" title="asyncio.Lock"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lock</span></code></a>
+object, and it is used as the underlying lock.  Otherwise,
+a new <a class="reference internal" href="#asyncio.Lock" title="asyncio.Lock"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lock</span></code></a> object is created and used as the underlying lock.</p>
+<p>This class is <a class="reference internal" href="asyncio-dev.html#asyncio-multithreading"><span class="std std-ref">not thread safe</span></a>.</p>
+<dl class="method">
+<dt id="asyncio.Condition.acquire">
+<em class="property">coroutine </em><code class="descname">acquire</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Condition.acquire" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire the underlying lock.</p>
+<p>This method blocks until the lock is unlocked, then sets it to locked and
+returns <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Condition.notify">
+<code class="descname">notify</code><span class="sig-paren">(</span><em>n=1</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Condition.notify" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, wake up one coroutine waiting on this condition, if any.
+If the calling coroutine has not acquired the lock when this method is
+called, a <a class="reference internal" href="exceptions.html#RuntimeError" title="RuntimeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> is raised.</p>
+<p>This method wakes up at most <em>n</em> of the coroutines waiting for the
+condition variable; it is a no-op if no coroutines are waiting.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">An awakened coroutine does not actually return from its <a class="reference internal" href="asyncio-task.html#asyncio.wait" title="asyncio.wait"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wait()</span></code></a>
+call until it can reacquire the lock. Since <a class="reference internal" href="#asyncio.Condition.notify" title="asyncio.Condition.notify"><code class="xref py py-meth docutils literal notranslate"><span class="pre">notify()</span></code></a> does not
+release the lock, its caller should.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Condition.locked">
+<code class="descname">locked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Condition.locked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the underlying lock is acquired.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Condition.notify_all">
+<code class="descname">notify_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Condition.notify_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wake up all coroutines waiting on this condition. This method acts like
+<a class="reference internal" href="#asyncio.Condition.notify" title="asyncio.Condition.notify"><code class="xref py py-meth docutils literal notranslate"><span class="pre">notify()</span></code></a>, but wakes up all waiting coroutines instead of one. If the
+calling coroutine has not acquired the lock when this method is called, a
+<a class="reference internal" href="exceptions.html#RuntimeError" title="RuntimeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> is raised.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Condition.release">
+<code class="descname">release</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Condition.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Release the underlying lock.</p>
+<p>When the lock is locked, reset it to unlocked, and return. If any other
+coroutines are blocked waiting for the lock to become unlocked, allow
+exactly one of them to proceed.</p>
+<p>When invoked on an unlocked lock, a <a class="reference internal" href="exceptions.html#RuntimeError" title="RuntimeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> is raised.</p>
+<p>There is no return value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Condition.wait">
+<em class="property">coroutine </em><code class="descname">wait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Condition.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until notified.</p>
+<p>If the calling coroutine has not acquired the lock when this method is
+called, a <a class="reference internal" href="exceptions.html#RuntimeError" title="RuntimeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> is raised.</p>
+<p>This method releases the underlying lock, and then blocks until it is
+awakened by a <a class="reference internal" href="#asyncio.Condition.notify" title="asyncio.Condition.notify"><code class="xref py py-meth docutils literal notranslate"><span class="pre">notify()</span></code></a> or <a class="reference internal" href="#asyncio.Condition.notify_all" title="asyncio.Condition.notify_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">notify_all()</span></code></a> call for the same
+condition variable in another coroutine.  Once awakened, it re-acquires
+the lock and returns <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Condition.wait_for">
+<em class="property">coroutine </em><code class="descname">wait_for</code><span class="sig-paren">(</span><em>predicate</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Condition.wait_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until a predicate becomes true.</p>
+<p>The predicate should be a callable which result will be interpreted as a
+boolean value. The final predicate value is the return value.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="semaphores">
+<h2>18.5.7.2. Semaphores<a class="headerlink" href="#semaphores" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="semaphore">
+<h3>18.5.7.2.1. Semaphore<a class="headerlink" href="#semaphore" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="asyncio.Semaphore">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">Semaphore</code><span class="sig-paren">(</span><em>value=1</em>, <em>*</em>, <em>loop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Semaphore" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Semaphore implementation.</p>
+<p>A semaphore manages an internal counter which is decremented by each
+<a class="reference internal" href="#asyncio.Semaphore.acquire" title="asyncio.Semaphore.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a> call and incremented by each <a class="reference internal" href="#asyncio.Semaphore.release" title="asyncio.Semaphore.release"><code class="xref py py-meth docutils literal notranslate"><span class="pre">release()</span></code></a> call. The
+counter can never go below zero; when <a class="reference internal" href="#asyncio.Semaphore.acquire" title="asyncio.Semaphore.acquire"><code class="xref py py-meth docutils literal notranslate"><span class="pre">acquire()</span></code></a> finds that it is zero,
+it blocks, waiting until some other coroutine calls <a class="reference internal" href="#asyncio.Semaphore.release" title="asyncio.Semaphore.release"><code class="xref py py-meth docutils literal notranslate"><span class="pre">release()</span></code></a>.</p>
+<p>Semaphores also support the context management protocol.</p>
+<p>The optional argument gives the initial value for the internal counter; it
+defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code>. If the value given is less than <code class="docutils literal notranslate"><span class="pre">0</span></code>, <a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>
+is raised.</p>
+<p>This class is <a class="reference internal" href="asyncio-dev.html#asyncio-multithreading"><span class="std std-ref">not thread safe</span></a>.</p>
+<dl class="method">
+<dt id="asyncio.Semaphore.acquire">
+<em class="property">coroutine </em><code class="descname">acquire</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Semaphore.acquire" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquire a semaphore.</p>
+<p>If the internal counter is larger than zero on entry, decrement it by one
+and return <code class="docutils literal notranslate"><span class="pre">True</span></code> immediately.  If it is zero on entry, block, waiting
+until some other coroutine has called <a class="reference internal" href="#asyncio.Semaphore.release" title="asyncio.Semaphore.release"><code class="xref py py-meth docutils literal notranslate"><span class="pre">release()</span></code></a> to make it larger
+than <code class="docutils literal notranslate"><span class="pre">0</span></code>, and then return <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Semaphore.locked">
+<code class="descname">locked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Semaphore.locked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if semaphore can not be acquired immediately.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Semaphore.release">
+<code class="descname">release</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Semaphore.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Release a semaphore, incrementing the internal counter by one. When it
+was zero on entry and another coroutine is waiting for it to become
+larger than zero again, wake up that coroutine.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="boundedsemaphore">
+<h3>18.5.7.2.2. BoundedSemaphore<a class="headerlink" href="#boundedsemaphore" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="asyncio.BoundedSemaphore">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">BoundedSemaphore</code><span class="sig-paren">(</span><em>value=1</em>, <em>*</em>, <em>loop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.BoundedSemaphore" title="Permalink to this definition">¶</a></dt>
+<dd><p>A bounded semaphore implementation. Inherit from <a class="reference internal" href="#asyncio.Semaphore" title="asyncio.Semaphore"><code class="xref py py-class docutils literal notranslate"><span class="pre">Semaphore</span></code></a>.</p>
+<p>This raises <a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> in <a class="reference internal" href="#asyncio.Semaphore.release" title="asyncio.Semaphore.release"><code class="xref py py-meth docutils literal notranslate"><span class="pre">release()</span></code></a> if it would
+increase the value above the initial value.</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">18.5.7. Synchronization primitives</a><ul>
+<li><a class="reference internal" href="#locks">18.5.7.1. Locks</a><ul>
+<li><a class="reference internal" href="#lock">18.5.7.1.1. Lock</a></li>
+<li><a class="reference internal" href="#event">18.5.7.1.2. Event</a></li>
+<li><a class="reference internal" href="#condition">18.5.7.1.3. Condition</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#semaphores">18.5.7.2. Semaphores</a><ul>
+<li><a class="reference internal" href="#semaphore">18.5.7.2.1. Semaphore</a></li>
+<li><a class="reference internal" href="#boundedsemaphore">18.5.7.2.2. BoundedSemaphore</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="asyncio-subprocess.html"
+                        title="previous chapter">18.5.6. Subprocess</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="asyncio-queue.html"
+                        title="next chapter">18.5.8. Queues</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Report a Bug</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/3.6/Doc/library/asyncio-sync.rst"
+            rel="nofollow">Show Source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="asyncio-queue.html" title="18.5.8. Queues"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="asyncio-subprocess.html" title="18.5.6. Subprocess"
+             >previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >The Python Standard Library</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="ipc.html" >18. Interprocess Communication and Networking</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="asyncio.html" >18.5. <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> — Asynchronous I/O, event loop, coroutines and tasks</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../copyright.html">Copyright</a> 2001-2018, Python Software Foundation.
+    <br />
+    The Python Software Foundation is a non-profit corporation.
+    <a href="https://www.python.org/psf/donations/">Please donate.</a>
+    <br />
+    Last updated on May 17, 2018.
+    <a href="../bugs.html">Found a bug</a>?
+    <br />
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.7.4.
+    </div>
+
+  </body>
+</html>

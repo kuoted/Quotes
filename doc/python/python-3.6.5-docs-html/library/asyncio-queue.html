@@ -1,0 +1,356 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>18.5.8. Queues &#8212; Python 3.6.5 documentation</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Python 3.6.5 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="18.5.9. Develop with asyncio" href="asyncio-dev.html" />
+    <link rel="prev" title="18.5.7. Synchronization primitives" href="asyncio-sync.html" />
+    <link rel="shortcut icon" type="image/png" href="../_static/py.png" />
+    <link rel="canonical" href="https://docs.python.org/3/library/asyncio-queue.html" />
+    
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+    
+    
+ 
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="asyncio-dev.html" title="18.5.9. Develop with asyncio"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="asyncio-sync.html" title="18.5.7. Synchronization primitives"
+             accesskey="P">previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >The Python Standard Library</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="ipc.html" >18. Interprocess Communication and Networking</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="asyncio.html" accesskey="U">18.5. <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> — Asynchronous I/O, event loop, coroutines and tasks</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="queues">
+<h1>18.5.8. Queues<a class="headerlink" href="#queues" title="Permalink to this headline">¶</a></h1>
+<p><strong>Source code:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.6/Lib/asyncio/queues.py">Lib/asyncio/queues.py</a></p>
+<p>Queues:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#asyncio.Queue" title="asyncio.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></a></li>
+<li><a class="reference internal" href="#asyncio.PriorityQueue" title="asyncio.PriorityQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriorityQueue</span></code></a></li>
+<li><a class="reference internal" href="#asyncio.LifoQueue" title="asyncio.LifoQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">LifoQueue</span></code></a></li>
+</ul>
+<p>asyncio queue API was designed to be close to classes of the <a class="reference internal" href="queue.html#module-queue" title="queue: A synchronized queue class."><code class="xref py py-mod docutils literal notranslate"><span class="pre">queue</span></code></a>
+module (<a class="reference internal" href="queue.html#queue.Queue" title="queue.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></a>, <a class="reference internal" href="queue.html#queue.PriorityQueue" title="queue.PriorityQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">PriorityQueue</span></code></a>,
+<a class="reference internal" href="queue.html#queue.LifoQueue" title="queue.LifoQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">LifoQueue</span></code></a>), but it has no <em>timeout</em> parameter. The
+<a class="reference internal" href="asyncio-task.html#asyncio.wait_for" title="asyncio.wait_for"><code class="xref py py-func docutils literal notranslate"><span class="pre">asyncio.wait_for()</span></code></a> function can be used to cancel a task after a timeout.</p>
+<div class="section" id="queue">
+<h2>18.5.8.1. Queue<a class="headerlink" href="#queue" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncio.Queue">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">Queue</code><span class="sig-paren">(</span><em>maxsize=0</em>, <em>*</em>, <em>loop=None</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>A queue, useful for coordinating producer and consumer coroutines.</p>
+<p>If <em>maxsize</em> is less than or equal to zero, the queue size is infinite. If
+it is an integer greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>, then <code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span> <span class="pre">put()</span></code> will block
+when the queue reaches <em>maxsize</em>, until an item is removed by <a class="reference internal" href="#asyncio.Queue.get" title="asyncio.Queue.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get()</span></code></a>.</p>
+<p>Unlike the standard library <a class="reference internal" href="queue.html#module-queue" title="queue: A synchronized queue class."><code class="xref py py-mod docutils literal notranslate"><span class="pre">queue</span></code></a>, you can reliably know this Queue’s
+size with <a class="reference internal" href="#asyncio.Queue.qsize" title="asyncio.Queue.qsize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">qsize()</span></code></a>, since your single-threaded asyncio application won’t
+be interrupted between calling <a class="reference internal" href="#asyncio.Queue.qsize" title="asyncio.Queue.qsize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">qsize()</span></code></a> and doing an operation on the
+Queue.</p>
+<p>This class is <a class="reference internal" href="asyncio-dev.html#asyncio-multithreading"><span class="std std-ref">not thread safe</span></a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 3.4.4: </span>New <a class="reference internal" href="#asyncio.Queue.join" title="asyncio.Queue.join"><code class="xref py py-meth docutils literal notranslate"><span class="pre">join()</span></code></a> and <a class="reference internal" href="#asyncio.Queue.task_done" title="asyncio.Queue.task_done"><code class="xref py py-meth docutils literal notranslate"><span class="pre">task_done()</span></code></a> methods.</p>
+</div>
+<dl class="method">
+<dt id="asyncio.Queue.empty">
+<code class="descname">empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Queue.empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the queue is empty, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Queue.full">
+<code class="descname">full</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Queue.full" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if there are <a class="reference internal" href="#asyncio.Queue.maxsize" title="asyncio.Queue.maxsize"><code class="xref py py-attr docutils literal notranslate"><span class="pre">maxsize</span></code></a> items in the queue.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the Queue was initialized with <code class="docutils literal notranslate"><span class="pre">maxsize=0</span></code> (the default), then
+<a class="reference internal" href="#asyncio.Queue.full" title="asyncio.Queue.full"><code class="xref py py-meth docutils literal notranslate"><span class="pre">full()</span></code></a> is never <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Queue.get">
+<em class="property">coroutine </em><code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Queue.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove and return an item from the queue. If queue is empty, wait until
+an item is available.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="#asyncio.Queue.empty" title="asyncio.Queue.empty"><code class="xref py py-meth docutils literal notranslate"><span class="pre">empty()</span></code></a> method.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Queue.get_nowait">
+<code class="descname">get_nowait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Queue.get_nowait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove and return an item from the queue.</p>
+<p>Return an item if one is immediately available, else raise
+<a class="reference internal" href="#asyncio.QueueEmpty" title="asyncio.QueueEmpty"><code class="xref py py-exc docutils literal notranslate"><span class="pre">QueueEmpty</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Queue.join">
+<em class="property">coroutine </em><code class="descname">join</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Queue.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Block until all items in the queue have been gotten and processed.</p>
+<p>The count of unfinished tasks goes up whenever an item is added to the
+queue. The count goes down whenever a consumer thread calls
+<a class="reference internal" href="#asyncio.Queue.task_done" title="asyncio.Queue.task_done"><code class="xref py py-meth docutils literal notranslate"><span class="pre">task_done()</span></code></a> to indicate that the item was retrieved and all work on
+it is complete.  When the count of unfinished tasks drops to zero,
+<a class="reference internal" href="#asyncio.Queue.join" title="asyncio.Queue.join"><code class="xref py py-meth docutils literal notranslate"><span class="pre">join()</span></code></a> unblocks.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.4.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Queue.put">
+<em class="property">coroutine </em><code class="descname">put</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Queue.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put an item into the queue. If the queue is full, wait until a free slot
+is available before adding item.</p>
+<p>This method is a <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="#asyncio.Queue.full" title="asyncio.Queue.full"><code class="xref py py-meth docutils literal notranslate"><span class="pre">full()</span></code></a> method.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Queue.put_nowait">
+<code class="descname">put_nowait</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Queue.put_nowait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put an item into the queue without blocking.</p>
+<p>If no free slot is immediately available, raise <a class="reference internal" href="#asyncio.QueueFull" title="asyncio.QueueFull"><code class="xref py py-exc docutils literal notranslate"><span class="pre">QueueFull</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Queue.qsize">
+<code class="descname">qsize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Queue.qsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of items in the queue.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="asyncio.Queue.task_done">
+<code class="descname">task_done</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#asyncio.Queue.task_done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicate that a formerly enqueued task is complete.</p>
+<p>Used by queue consumers. For each <a class="reference internal" href="#asyncio.Queue.get" title="asyncio.Queue.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get()</span></code></a> used to fetch a task, a
+subsequent call to <a class="reference internal" href="#asyncio.Queue.task_done" title="asyncio.Queue.task_done"><code class="xref py py-meth docutils literal notranslate"><span class="pre">task_done()</span></code></a> tells the queue that the processing
+on the task is complete.</p>
+<p>If a <a class="reference internal" href="#asyncio.Queue.join" title="asyncio.Queue.join"><code class="xref py py-meth docutils literal notranslate"><span class="pre">join()</span></code></a> is currently blocking, it will resume when all items
+have been processed (meaning that a <a class="reference internal" href="#asyncio.Queue.task_done" title="asyncio.Queue.task_done"><code class="xref py py-meth docutils literal notranslate"><span class="pre">task_done()</span></code></a> call was received
+for every item that had been <a class="reference internal" href="#asyncio.Queue.put" title="asyncio.Queue.put"><code class="xref py py-meth docutils literal notranslate"><span class="pre">put()</span></code></a> into the queue).</p>
+<p>Raises <a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if called more times than there were items
+placed in the queue.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.4.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="asyncio.Queue.maxsize">
+<code class="descname">maxsize</code><a class="headerlink" href="#asyncio.Queue.maxsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of items allowed in the queue.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="priorityqueue">
+<h2>18.5.8.2. PriorityQueue<a class="headerlink" href="#priorityqueue" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncio.PriorityQueue">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">PriorityQueue</code><a class="headerlink" href="#asyncio.PriorityQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>A subclass of <a class="reference internal" href="#asyncio.Queue" title="asyncio.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></a>; retrieves entries in priority order (lowest
+first).</p>
+<p>Entries are typically tuples of the form: (priority number, data).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="lifoqueue">
+<h2>18.5.8.3. LifoQueue<a class="headerlink" href="#lifoqueue" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="asyncio.LifoQueue">
+<em class="property">class </em><code class="descclassname">asyncio.</code><code class="descname">LifoQueue</code><a class="headerlink" href="#asyncio.LifoQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>A subclass of <a class="reference internal" href="#asyncio.Queue" title="asyncio.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></a> that retrieves most recently added entries
+first.</p>
+</dd></dl>
+
+<div class="section" id="exceptions">
+<h3>18.5.8.3.1. Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="asyncio.QueueEmpty">
+<em class="property">exception </em><code class="descclassname">asyncio.</code><code class="descname">QueueEmpty</code><a class="headerlink" href="#asyncio.QueueEmpty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception raised when the <a class="reference internal" href="#asyncio.Queue.get_nowait" title="asyncio.Queue.get_nowait"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_nowait()</span></code></a> method is called on a
+<a class="reference internal" href="#asyncio.Queue" title="asyncio.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></a> object which is empty.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="asyncio.QueueFull">
+<em class="property">exception </em><code class="descclassname">asyncio.</code><code class="descname">QueueFull</code><a class="headerlink" href="#asyncio.QueueFull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception raised when the <a class="reference internal" href="#asyncio.Queue.put_nowait" title="asyncio.Queue.put_nowait"><code class="xref py py-meth docutils literal notranslate"><span class="pre">put_nowait()</span></code></a> method is called on a
+<a class="reference internal" href="#asyncio.Queue" title="asyncio.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></a> object which is full.</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">18.5.8. Queues</a><ul>
+<li><a class="reference internal" href="#queue">18.5.8.1. Queue</a></li>
+<li><a class="reference internal" href="#priorityqueue">18.5.8.2. PriorityQueue</a></li>
+<li><a class="reference internal" href="#lifoqueue">18.5.8.3. LifoQueue</a><ul>
+<li><a class="reference internal" href="#exceptions">18.5.8.3.1. Exceptions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="asyncio-sync.html"
+                        title="previous chapter">18.5.7. Synchronization primitives</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="asyncio-dev.html"
+                        title="next chapter">18.5.9. Develop with asyncio</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Report a Bug</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/3.6/Doc/library/asyncio-queue.rst"
+            rel="nofollow">Show Source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="asyncio-dev.html" title="18.5.9. Develop with asyncio"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="asyncio-sync.html" title="18.5.7. Synchronization primitives"
+             >previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >The Python Standard Library</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="ipc.html" >18. Interprocess Communication and Networking</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="asyncio.html" >18.5. <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> — Asynchronous I/O, event loop, coroutines and tasks</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../copyright.html">Copyright</a> 2001-2018, Python Software Foundation.
+    <br />
+    The Python Software Foundation is a non-profit corporation.
+    <a href="https://www.python.org/psf/donations/">Please donate.</a>
+    <br />
+    Last updated on May 17, 2018.
+    <a href="../bugs.html">Found a bug</a>?
+    <br />
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.7.4.
+    </div>
+
+  </body>
+</html>

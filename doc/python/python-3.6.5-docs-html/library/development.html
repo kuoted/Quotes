@@ -1,0 +1,335 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>26. Development Tools &#8212; Python 3.6.5 documentation</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Python 3.6.5 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="26.1. typing — Support for type hints" href="typing.html" />
+    <link rel="prev" title="25.6. Other Graphical User Interface Packages" href="othergui.html" />
+    <link rel="shortcut icon" type="image/png" href="../_static/py.png" />
+    <link rel="canonical" href="https://docs.python.org/3/library/development.html" />
+    
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+    
+    
+ 
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="typing.html" title="26.1. typing — Support for type hints"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="othergui.html" title="25.6. Other Graphical User Interface Packages"
+             accesskey="P">previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">The Python Standard Library</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="development-tools">
+<span id="development"></span><h1>26. Development Tools<a class="headerlink" href="#development-tools" title="Permalink to this headline">¶</a></h1>
+<p>The modules described in this chapter help you write software.  For example, the
+<a class="reference internal" href="pydoc.html#module-pydoc" title="pydoc: Documentation generator and online help system."><code class="xref py py-mod docutils literal notranslate"><span class="pre">pydoc</span></code></a> module takes a module and generates documentation based on the
+module’s contents.  The <a class="reference internal" href="doctest.html#module-doctest" title="doctest: Test pieces of code within docstrings."><code class="xref py py-mod docutils literal notranslate"><span class="pre">doctest</span></code></a> and <a class="reference internal" href="unittest.html#module-unittest" title="unittest: Unit testing framework for Python."><code class="xref py py-mod docutils literal notranslate"><span class="pre">unittest</span></code></a> modules contains
+frameworks for writing unit tests that automatically exercise code and verify
+that the expected output is produced.  <strong class="program">2to3</strong> can translate Python 2.x
+source code into valid Python 3.x code.</p>
+<p>The list of modules described in this chapter is:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="typing.html">26.1. <code class="docutils literal notranslate"><span class="pre">typing</span></code> — Support for type hints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typing.html#type-aliases">26.1.1. Type aliases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="typing.html#newtype">26.1.2. NewType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="typing.html#callable">26.1.3. Callable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="typing.html#generics">26.1.4. Generics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="typing.html#user-defined-generic-types">26.1.5. User-defined generic types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="typing.html#the-any-type">26.1.6. The <code class="docutils literal notranslate"><span class="pre">Any</span></code> type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="typing.html#classes-functions-and-decorators">26.1.7. Classes, functions, and decorators</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pydoc.html">26.2. <code class="docutils literal notranslate"><span class="pre">pydoc</span></code> — Documentation generator and online help system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doctest.html">26.3. <code class="docutils literal notranslate"><span class="pre">doctest</span></code> — Test interactive Python examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doctest.html#simple-usage-checking-examples-in-docstrings">26.3.1. Simple Usage: Checking Examples in Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doctest.html#simple-usage-checking-examples-in-a-text-file">26.3.2. Simple Usage: Checking Examples in a Text File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doctest.html#how-it-works">26.3.3. How It Works</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#which-docstrings-are-examined">26.3.3.1. Which Docstrings Are Examined?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#how-are-docstring-examples-recognized">26.3.3.2. How are Docstring Examples Recognized?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#what-s-the-execution-context">26.3.3.3. What’s the Execution Context?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#what-about-exceptions">26.3.3.4. What About Exceptions?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#option-flags">26.3.3.5. Option Flags</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#directives">26.3.3.6. Directives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#warnings">26.3.3.7. Warnings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="doctest.html#basic-api">26.3.4. Basic API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doctest.html#unittest-api">26.3.5. Unittest API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doctest.html#advanced-api">26.3.6. Advanced API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#doctest-objects">26.3.6.1. DocTest Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#example-objects">26.3.6.2. Example Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#doctestfinder-objects">26.3.6.3. DocTestFinder objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#doctestparser-objects">26.3.6.4. DocTestParser objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#doctestrunner-objects">26.3.6.5. DocTestRunner objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="doctest.html#outputchecker-objects">26.3.6.6. OutputChecker objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="doctest.html#debugging">26.3.7. Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doctest.html#soapbox">26.3.8. Soapbox</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="unittest.html">26.4. <code class="docutils literal notranslate"><span class="pre">unittest</span></code> — Unit testing framework</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html#basic-example">26.4.1. Basic example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html#command-line-interface">26.4.2. Command-Line Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#command-line-options">26.4.2.1. Command-line options</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html#test-discovery">26.4.3. Test Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html#organizing-test-code">26.4.4. Organizing test code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html#re-using-old-test-code">26.4.5. Re-using old test code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html#skipping-tests-and-expected-failures">26.4.6. Skipping tests and expected failures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html#distinguishing-test-iterations-using-subtests">26.4.7. Distinguishing test iterations using subtests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html#classes-and-functions">26.4.8. Classes and functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#test-cases">26.4.8.1. Test cases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="unittest.html#deprecated-aliases">26.4.8.1.1. Deprecated aliases</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#grouping-tests">26.4.8.2. Grouping tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#loading-and-running-tests">26.4.8.3. Loading and running tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="unittest.html#load-tests-protocol">26.4.8.3.1. load_tests Protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html#class-and-module-fixtures">26.4.9. Class and Module Fixtures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#setupclass-and-teardownclass">26.4.9.1. setUpClass and tearDownClass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#setupmodule-and-teardownmodule">26.4.9.2. setUpModule and tearDownModule</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html#signal-handling">26.4.10. Signal Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="unittest.mock.html">26.5. <code class="docutils literal notranslate"><span class="pre">unittest.mock</span></code> — mock object library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="unittest.mock.html#quick-guide">26.5.1. Quick Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.mock.html#the-mock-class">26.5.2. The Mock Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#calling">26.5.2.1. Calling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#deleting-attributes">26.5.2.2. Deleting Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#mock-names-and-the-name-attribute">26.5.2.3. Mock names and the name attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#attaching-mocks-as-attributes">26.5.2.4. Attaching Mocks as Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.mock.html#the-patchers">26.5.3. The patchers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#patch">26.5.3.1. patch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#patch-object">26.5.3.2. patch.object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#patch-dict">26.5.3.3. patch.dict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#patch-multiple">26.5.3.4. patch.multiple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#patch-methods-start-and-stop">26.5.3.5. patch methods: start and stop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#patch-builtins">26.5.3.6. patch builtins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#test-prefix">26.5.3.7. TEST_PREFIX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#nesting-patch-decorators">26.5.3.8. Nesting Patch Decorators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#where-to-patch">26.5.3.9. Where to patch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#patching-descriptors-and-proxy-objects">26.5.3.10. Patching Descriptors and Proxy Objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.mock.html#magicmock-and-magic-method-support">26.5.4. MagicMock and magic method support</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#mocking-magic-methods">26.5.4.1. Mocking Magic Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#magic-mock">26.5.4.2. Magic Mock</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.mock.html#helpers">26.5.5. Helpers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#sentinel">26.5.5.1. sentinel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#default">26.5.5.2. DEFAULT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#call">26.5.5.3. call</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#create-autospec">26.5.5.4. create_autospec</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#any">26.5.5.5. ANY</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#filter-dir">26.5.5.6. FILTER_DIR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#mock-open">26.5.5.7. mock_open</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock.html#autospeccing">26.5.5.8. Autospeccing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="unittest.mock-examples.html">26.6. <code class="docutils literal notranslate"><span class="pre">unittest.mock</span></code> — getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="unittest.mock-examples.html#using-mock">26.6.1. Using Mock</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#mock-patching-methods">26.6.1.1. Mock Patching Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#mock-for-method-calls-on-an-object">26.6.1.2. Mock for Method Calls on an Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#mocking-classes">26.6.1.3. Mocking Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#naming-your-mocks">26.6.1.4. Naming your mocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#tracking-all-calls">26.6.1.5. Tracking all Calls</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#setting-return-values-and-attributes">26.6.1.6. Setting Return Values and Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#raising-exceptions-with-mocks">26.6.1.7. Raising exceptions with mocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#side-effect-functions-and-iterables">26.6.1.8. Side effect functions and iterables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#creating-a-mock-from-an-existing-object">26.6.1.9. Creating a Mock from an Existing Object</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.mock-examples.html#patch-decorators">26.6.2. Patch Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.mock-examples.html#further-examples">26.6.3. Further Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#mocking-chained-calls">26.6.3.1. Mocking chained calls</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#partial-mocking">26.6.3.2. Partial mocking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#mocking-a-generator-method">26.6.3.3. Mocking a Generator Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#applying-the-same-patch-to-every-test-method">26.6.3.4. Applying the same patch to every test method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#mocking-unbound-methods">26.6.3.5. Mocking Unbound Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#checking-multiple-calls-with-mock">26.6.3.6. Checking multiple calls with mock</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#coping-with-mutable-arguments">26.6.3.7. Coping with mutable arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#nesting-patches">26.6.3.8. Nesting Patches</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#mocking-a-dictionary-with-magicmock">26.6.3.9. Mocking a dictionary with MagicMock</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#mock-subclasses-and-their-attributes">26.6.3.10. Mock subclasses and their attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#mocking-imports-with-patch-dict">26.6.3.11. Mocking imports with patch.dict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#tracking-order-of-calls-and-less-verbose-call-assertions">26.6.3.12. Tracking order of calls and less verbose call assertions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.mock-examples.html#more-complex-argument-matching">26.6.3.13. More complex argument matching</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="2to3.html">26.7. 2to3 - Automated Python 2 to 3 code translation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="2to3.html#using-2to3">26.7.1. Using 2to3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2to3.html#fixers">26.7.2. Fixers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2to3.html#module-lib2to3">26.7.3. <code class="docutils literal notranslate"><span class="pre">lib2to3</span></code> - 2to3’s library</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="test.html">26.8. <code class="docutils literal notranslate"><span class="pre">test</span></code> — Regression tests package for Python</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="test.html#writing-unit-tests-for-the-test-package">26.8.1. Writing Unit Tests for the <code class="docutils literal notranslate"><span class="pre">test</span></code> package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test.html#running-tests-using-the-command-line-interface">26.8.2. Running tests using the command-line interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="test.html#module-test.support">26.9. <code class="docutils literal notranslate"><span class="pre">test.support</span></code> — Utilities for the Python test suite</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="othergui.html"
+                        title="previous chapter">25.6. Other Graphical User Interface Packages</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="typing.html"
+                        title="next chapter">26.1. <code class="docutils literal notranslate"><span class="pre">typing</span></code> — Support for type hints</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Report a Bug</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/3.6/Doc/library/development.rst"
+            rel="nofollow">Show Source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="typing.html" title="26.1. typing — Support for type hints"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="othergui.html" title="25.6. Other Graphical User Interface Packages"
+             >previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >The Python Standard Library</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../copyright.html">Copyright</a> 2001-2018, Python Software Foundation.
+    <br />
+    The Python Software Foundation is a non-profit corporation.
+    <a href="https://www.python.org/psf/donations/">Please donate.</a>
+    <br />
+    Last updated on May 17, 2018.
+    <a href="../bugs.html">Found a bug</a>?
+    <br />
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.7.4.
+    </div>
+
+  </body>
+</html>

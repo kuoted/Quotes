@@ -1,0 +1,247 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>9. Numeric and Mathematical Modules &#8212; Python 3.6.5 documentation</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Python 3.6.5 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="9.1. numbers — Numeric abstract base classes" href="numbers.html" />
+    <link rel="prev" title="8.13. enum — Support for enumerations" href="enum.html" />
+    <link rel="shortcut icon" type="image/png" href="../_static/py.png" />
+    <link rel="canonical" href="https://docs.python.org/3/library/numeric.html" />
+    
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+    
+    
+ 
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="numbers.html" title="9.1. numbers — Numeric abstract base classes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="enum.html" title="8.13. enum — Support for enumerations"
+             accesskey="P">previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">The Python Standard Library</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="numeric-and-mathematical-modules">
+<span id="numeric"></span><h1>9. Numeric and Mathematical Modules<a class="headerlink" href="#numeric-and-mathematical-modules" title="Permalink to this headline">¶</a></h1>
+<p>The modules described in this chapter provide numeric and math-related functions
+and data types. The <a class="reference internal" href="numbers.html#module-numbers" title="numbers: Numeric abstract base classes (Complex, Real, Integral, etc.)."><code class="xref py py-mod docutils literal notranslate"><span class="pre">numbers</span></code></a> module defines an abstract hierarchy of
+numeric types. The <a class="reference internal" href="math.html#module-math" title="math: Mathematical functions (sin() etc.)."><code class="xref py py-mod docutils literal notranslate"><span class="pre">math</span></code></a> and <a class="reference internal" href="cmath.html#module-cmath" title="cmath: Mathematical functions for complex numbers."><code class="xref py py-mod docutils literal notranslate"><span class="pre">cmath</span></code></a> modules contain various
+mathematical functions for floating-point and complex numbers. The <a class="reference internal" href="decimal.html#module-decimal" title="decimal: Implementation of the General Decimal Arithmetic  Specification."><code class="xref py py-mod docutils literal notranslate"><span class="pre">decimal</span></code></a>
+module supports exact representations of decimal numbers, using arbitrary precision
+arithmetic.</p>
+<p>The following modules are documented in this chapter:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="numbers.html">9.1. <code class="docutils literal notranslate"><span class="pre">numbers</span></code> — Numeric abstract base classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numbers.html#the-numeric-tower">9.1.1. The numeric tower</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numbers.html#notes-for-type-implementors">9.1.2. Notes for type implementors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numbers.html#adding-more-numeric-abcs">9.1.2.1. Adding More Numeric ABCs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numbers.html#implementing-the-arithmetic-operations">9.1.2.2. Implementing the arithmetic operations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="math.html">9.2. <code class="docutils literal notranslate"><span class="pre">math</span></code> — Mathematical functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="math.html#number-theoretic-and-representation-functions">9.2.1. Number-theoretic and representation functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html#power-and-logarithmic-functions">9.2.2. Power and logarithmic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html#trigonometric-functions">9.2.3. Trigonometric functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html#angular-conversion">9.2.4. Angular conversion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html#hyperbolic-functions">9.2.5. Hyperbolic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html#special-functions">9.2.6. Special functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html#constants">9.2.7. Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cmath.html">9.3. <code class="docutils literal notranslate"><span class="pre">cmath</span></code> — Mathematical functions for complex numbers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cmath.html#conversions-to-and-from-polar-coordinates">9.3.1. Conversions to and from polar coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmath.html#power-and-logarithmic-functions">9.3.2. Power and logarithmic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmath.html#trigonometric-functions">9.3.3. Trigonometric functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmath.html#hyperbolic-functions">9.3.4. Hyperbolic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmath.html#classification-functions">9.3.5. Classification functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmath.html#constants">9.3.6. Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="decimal.html">9.4. <code class="docutils literal notranslate"><span class="pre">decimal</span></code> — Decimal fixed point and floating point arithmetic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="decimal.html#quick-start-tutorial">9.4.1. Quick-start Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decimal.html#decimal-objects">9.4.2. Decimal objects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="decimal.html#logical-operands">9.4.2.1. Logical operands</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="decimal.html#context-objects">9.4.3. Context objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decimal.html#constants">9.4.4. Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decimal.html#rounding-modes">9.4.5. Rounding modes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decimal.html#signals">9.4.6. Signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decimal.html#floating-point-notes">9.4.7. Floating Point Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="decimal.html#mitigating-round-off-error-with-increased-precision">9.4.7.1. Mitigating round-off error with increased precision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="decimal.html#special-values">9.4.7.2. Special values</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="decimal.html#working-with-threads">9.4.8. Working with threads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decimal.html#recipes">9.4.9. Recipes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decimal.html#decimal-faq">9.4.10. Decimal FAQ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fractions.html">9.5. <code class="docutils literal notranslate"><span class="pre">fractions</span></code> — Rational numbers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random.html">9.6. <code class="docutils literal notranslate"><span class="pre">random</span></code> — Generate pseudo-random numbers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="random.html#bookkeeping-functions">9.6.1. Bookkeeping functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random.html#functions-for-integers">9.6.2. Functions for integers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random.html#functions-for-sequences">9.6.3. Functions for sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random.html#real-valued-distributions">9.6.4. Real-valued distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random.html#alternative-generator">9.6.5. Alternative Generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random.html#notes-on-reproducibility">9.6.6. Notes on Reproducibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random.html#examples-and-recipes">9.6.7. Examples and Recipes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">9.7. <code class="docutils literal notranslate"><span class="pre">statistics</span></code> — Mathematical statistics functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="statistics.html#averages-and-measures-of-central-location">9.7.1. Averages and measures of central location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics.html#measures-of-spread">9.7.2. Measures of spread</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics.html#function-details">9.7.3. Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics.html#exceptions">9.7.4. Exceptions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="enum.html"
+                        title="previous chapter">8.13. <code class="docutils literal notranslate"><span class="pre">enum</span></code> — Support for enumerations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="numbers.html"
+                        title="next chapter">9.1. <code class="docutils literal notranslate"><span class="pre">numbers</span></code> — Numeric abstract base classes</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Report a Bug</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/3.6/Doc/library/numeric.rst"
+            rel="nofollow">Show Source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="numbers.html" title="9.1. numbers — Numeric abstract base classes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="enum.html" title="8.13. enum — Support for enumerations"
+             >previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >The Python Standard Library</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../copyright.html">Copyright</a> 2001-2018, Python Software Foundation.
+    <br />
+    The Python Software Foundation is a non-profit corporation.
+    <a href="https://www.python.org/psf/donations/">Please donate.</a>
+    <br />
+    Last updated on May 17, 2018.
+    <a href="../bugs.html">Found a bug</a>?
+    <br />
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.7.4.
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,540 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>18.5.9. Develop with asyncio &#8212; Python 3.6.5 documentation</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Python 3.6.5 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="18.6. asyncore — Asynchronous socket handler" href="asyncore.html" />
+    <link rel="prev" title="18.5.8. Queues" href="asyncio-queue.html" />
+    <link rel="shortcut icon" type="image/png" href="../_static/py.png" />
+    <link rel="canonical" href="https://docs.python.org/3/library/asyncio-dev.html" />
+    
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+    
+    
+ 
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="asyncore.html" title="18.6. asyncore — Asynchronous socket handler"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="asyncio-queue.html" title="18.5.8. Queues"
+             accesskey="P">previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >The Python Standard Library</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="ipc.html" >18. Interprocess Communication and Networking</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="asyncio.html" accesskey="U">18.5. <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> — Asynchronous I/O, event loop, coroutines and tasks</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="develop-with-asyncio">
+<span id="asyncio-dev"></span><h1>18.5.9. Develop with asyncio<a class="headerlink" href="#develop-with-asyncio" title="Permalink to this headline">¶</a></h1>
+<p>Asynchronous programming is different than classical “sequential” programming.
+This page lists common traps and explains how to avoid them.</p>
+<div class="section" id="debug-mode-of-asyncio">
+<span id="asyncio-debug-mode"></span><h2>18.5.9.1. Debug mode of asyncio<a class="headerlink" href="#debug-mode-of-asyncio" title="Permalink to this headline">¶</a></h2>
+<p>The implementation of <a class="reference internal" href="asyncio.html#module-asyncio" title="asyncio: Asynchronous I/O, event loop, coroutines and tasks."><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> has been written for performance.
+In order to ease the development of asynchronous code, you may wish to
+enable <em>debug mode</em>.</p>
+<p>To enable all debug checks for an application:</p>
+<ul class="simple">
+<li>Enable the asyncio debug mode globally by setting the environment variable
+<span class="target" id="index-0"></span><a class="reference internal" href="../using/cmdline.html#envvar-PYTHONASYNCIODEBUG"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PYTHONASYNCIODEBUG</span></code></a> to <code class="docutils literal notranslate"><span class="pre">1</span></code>, or by calling <a class="reference internal" href="asyncio-eventloop.html#asyncio.AbstractEventLoop.set_debug" title="asyncio.AbstractEventLoop.set_debug"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.set_debug()</span></code></a>.</li>
+<li>Set the log level of the <a class="reference internal" href="#asyncio-logger"><span class="std std-ref">asyncio logger</span></a> to
+<code class="xref py py-data docutils literal notranslate"><span class="pre">logging.DEBUG</span></code>. For example, call
+<code class="docutils literal notranslate"><span class="pre">logging.basicConfig(level=logging.DEBUG)</span></code> at startup.</li>
+<li>Configure the <a class="reference internal" href="warnings.html#module-warnings" title="warnings: Issue warning messages and control their disposition."><code class="xref py py-mod docutils literal notranslate"><span class="pre">warnings</span></code></a> module to display <a class="reference internal" href="exceptions.html#ResourceWarning" title="ResourceWarning"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ResourceWarning</span></code></a>
+warnings. For example, use the <code class="docutils literal notranslate"><span class="pre">-Wdefault</span></code> command line option of Python to
+display them.</li>
+</ul>
+<p>Examples debug checks:</p>
+<ul class="simple">
+<li>Log <a class="reference internal" href="#asyncio-coroutine-not-scheduled"><span class="std std-ref">coroutines defined but never “yielded from”</span></a></li>
+<li><a class="reference internal" href="asyncio-eventloop.html#asyncio.AbstractEventLoop.call_soon" title="asyncio.AbstractEventLoop.call_soon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">call_soon()</span></code></a> and <a class="reference internal" href="asyncio-eventloop.html#asyncio.AbstractEventLoop.call_at" title="asyncio.AbstractEventLoop.call_at"><code class="xref py py-meth docutils literal notranslate"><span class="pre">call_at()</span></code></a> methods
+raise an exception if they are called from the wrong thread.</li>
+<li>Log the execution time of the selector</li>
+<li>Log callbacks taking more than 100 ms to be executed. The
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">AbstractEventLoop.slow_callback_duration</span></code> attribute is the minimum
+duration in seconds of “slow” callbacks.</li>
+<li><a class="reference internal" href="exceptions.html#ResourceWarning" title="ResourceWarning"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ResourceWarning</span></code></a> warnings are emitted when transports and event loops
+are <a class="reference internal" href="#asyncio-close-transports"><span class="std std-ref">not closed explicitly</span></a>.</li>
+</ul>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="asyncio-eventloop.html#asyncio.AbstractEventLoop.set_debug" title="asyncio.AbstractEventLoop.set_debug"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.set_debug()</span></code></a> method and the <a class="reference internal" href="#asyncio-logger"><span class="std std-ref">asyncio logger</span></a>.</p>
+</div>
+</div>
+<div class="section" id="cancellation">
+<h2>18.5.9.2. Cancellation<a class="headerlink" href="#cancellation" title="Permalink to this headline">¶</a></h2>
+<p>Cancellation of tasks is not common in classic programming. In asynchronous
+programming, not only is it something common, but you have to prepare your
+code to handle it.</p>
+<p>Futures and tasks can be cancelled explicitly with their <a class="reference internal" href="asyncio-task.html#asyncio.Future.cancel" title="asyncio.Future.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Future.cancel()</span></code></a>
+method. The <a class="reference internal" href="asyncio-task.html#asyncio.wait_for" title="asyncio.wait_for"><code class="xref py py-func docutils literal notranslate"><span class="pre">wait_for()</span></code></a> function cancels the waited task when the timeout
+occurs. There are many other cases where a task can be cancelled indirectly.</p>
+<p>Don’t call <a class="reference internal" href="asyncio-task.html#asyncio.Future.set_result" title="asyncio.Future.set_result"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_result()</span></code></a> or <a class="reference internal" href="asyncio-task.html#asyncio.Future.set_exception" title="asyncio.Future.set_exception"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_exception()</span></code></a> method
+of <a class="reference internal" href="asyncio-task.html#asyncio.Future" title="asyncio.Future"><code class="xref py py-class docutils literal notranslate"><span class="pre">Future</span></code></a> if the future is cancelled: it would fail with an exception.
+For example, write:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">fut</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
+    <span class="n">fut</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="s1">&#39;done&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Don’t schedule directly a call to the <a class="reference internal" href="asyncio-task.html#asyncio.Future.set_result" title="asyncio.Future.set_result"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_result()</span></code></a> or the
+<a class="reference internal" href="asyncio-task.html#asyncio.Future.set_exception" title="asyncio.Future.set_exception"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_exception()</span></code></a> method of a future with
+<a class="reference internal" href="asyncio-eventloop.html#asyncio.AbstractEventLoop.call_soon" title="asyncio.AbstractEventLoop.call_soon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.call_soon()</span></code></a>: the future can be cancelled before its method
+is called.</p>
+<p>If you wait for a future, you should check early if the future was cancelled to
+avoid useless operations. Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@coroutine</span>
+<span class="k">def</span> <span class="nf">slow_operation</span><span class="p">(</span><span class="n">fut</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">fut</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
+        <span class="k">return</span>
+    <span class="c1"># ... slow computation ...</span>
+    <span class="k">yield from</span> <span class="n">fut</span>
+    <span class="c1"># ...</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="asyncio-task.html#asyncio.shield" title="asyncio.shield"><code class="xref py py-func docutils literal notranslate"><span class="pre">shield()</span></code></a> function can also be used to ignore cancellation.</p>
+</div>
+<div class="section" id="concurrency-and-multithreading">
+<span id="asyncio-multithreading"></span><h2>18.5.9.3. Concurrency and multithreading<a class="headerlink" href="#concurrency-and-multithreading" title="Permalink to this headline">¶</a></h2>
+<p>An event loop runs in a thread and executes all callbacks and tasks in the same
+thread. While a task is running in the event loop, no other task is running in
+the same thread. But when the task uses <code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span></code>, the task is suspended
+and the event loop executes the next task.</p>
+<p>To schedule a callback from a different thread, the
+<a class="reference internal" href="asyncio-eventloop.html#asyncio.AbstractEventLoop.call_soon_threadsafe" title="asyncio.AbstractEventLoop.call_soon_threadsafe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.call_soon_threadsafe()</span></code></a> method should be used. Example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">loop</span><span class="o">.</span><span class="n">call_soon_threadsafe</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Most asyncio objects are not thread safe. You should only worry if you access
+objects outside the event loop. For example, to cancel a future, don’t call
+directly its <a class="reference internal" href="asyncio-task.html#asyncio.Future.cancel" title="asyncio.Future.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Future.cancel()</span></code></a> method, but:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">loop</span><span class="o">.</span><span class="n">call_soon_threadsafe</span><span class="p">(</span><span class="n">fut</span><span class="o">.</span><span class="n">cancel</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To handle signals and to execute subprocesses, the event loop must be run in
+the main thread.</p>
+<p>To schedule a coroutine object from a different thread, the
+<a class="reference internal" href="asyncio-task.html#asyncio.run_coroutine_threadsafe" title="asyncio.run_coroutine_threadsafe"><code class="xref py py-func docutils literal notranslate"><span class="pre">run_coroutine_threadsafe()</span></code></a> function should be used. It returns a
+<a class="reference internal" href="concurrent.futures.html#concurrent.futures.Future" title="concurrent.futures.Future"><code class="xref py py-class docutils literal notranslate"><span class="pre">concurrent.futures.Future</span></code></a> to access the result:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run_coroutine_threadsafe</span><span class="p">(</span><span class="n">coro_func</span><span class="p">(),</span> <span class="n">loop</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>  <span class="c1"># Wait for the result with a timeout</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="asyncio-eventloop.html#asyncio.AbstractEventLoop.run_in_executor" title="asyncio.AbstractEventLoop.run_in_executor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.run_in_executor()</span></code></a> method can be used with a thread pool
+executor to execute a callback in different thread to not block the thread of
+the event loop.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p>The <a class="reference internal" href="asyncio-sync.html#asyncio-sync"><span class="std std-ref">Synchronization primitives</span></a> section describes ways
+to synchronize tasks.</p>
+<p class="last">The <a class="reference internal" href="asyncio-subprocess.html#asyncio-subprocess-threads"><span class="std std-ref">Subprocess and threads</span></a> section lists
+asyncio limitations to run subprocesses from different threads.</p>
+</div>
+</div>
+<div class="section" id="handle-blocking-functions-correctly">
+<span id="asyncio-handle-blocking"></span><h2>18.5.9.4. Handle blocking functions correctly<a class="headerlink" href="#handle-blocking-functions-correctly" title="Permalink to this headline">¶</a></h2>
+<p>Blocking functions should not be called directly. For example, if a function
+blocks for 1 second, other tasks are delayed by 1 second which can have an
+important impact on reactivity.</p>
+<p>For networking and subprocesses, the <a class="reference internal" href="asyncio.html#module-asyncio" title="asyncio: Asynchronous I/O, event loop, coroutines and tasks."><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> module provides high-level
+APIs like <a class="reference internal" href="asyncio-protocol.html#asyncio-protocol"><span class="std std-ref">protocols</span></a>.</p>
+<p>An executor can be used to run a task in a different thread or even in a
+different process, to not block the thread of the event loop. See the
+<a class="reference internal" href="asyncio-eventloop.html#asyncio.AbstractEventLoop.run_in_executor" title="asyncio.AbstractEventLoop.run_in_executor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.run_in_executor()</span></code></a> method.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="asyncio-eventloop.html#asyncio-delayed-calls"><span class="std std-ref">Delayed calls</span></a> section details how the
+event loop handles time.</p>
+</div>
+</div>
+<div class="section" id="logging">
+<span id="asyncio-logger"></span><h2>18.5.9.5. Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="asyncio.html#module-asyncio" title="asyncio: Asynchronous I/O, event loop, coroutines and tasks."><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> module logs information with the <a class="reference internal" href="logging.html#module-logging" title="logging: Flexible event logging system for applications."><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module in
+the logger <code class="docutils literal notranslate"><span class="pre">'asyncio'</span></code>.</p>
+<p>The default log level for the <a class="reference internal" href="asyncio.html#module-asyncio" title="asyncio: Asynchronous I/O, event loop, coroutines and tasks."><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> module is <code class="xref py py-data docutils literal notranslate"><span class="pre">logging.INFO</span></code>.
+For those not wanting such verbosity from <a class="reference internal" href="asyncio.html#module-asyncio" title="asyncio: Asynchronous I/O, event loop, coroutines and tasks."><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> the log level can
+be changed.  For example, to change the level to <code class="xref py py-data docutils literal notranslate"><span class="pre">logging.WARNING</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>logging.getLogger(&#39;asyncio&#39;).setLevel(logging.WARNING)
+</pre></div>
+</div>
+</div>
+<div class="section" id="detect-coroutine-objects-never-scheduled">
+<span id="asyncio-coroutine-not-scheduled"></span><h2>18.5.9.6. Detect coroutine objects never scheduled<a class="headerlink" href="#detect-coroutine-objects-never-scheduled" title="Permalink to this headline">¶</a></h2>
+<p>When a coroutine function is called and its result is not passed to
+<a class="reference internal" href="asyncio-task.html#asyncio.ensure_future" title="asyncio.ensure_future"><code class="xref py py-func docutils literal notranslate"><span class="pre">ensure_future()</span></code></a> or to the <a class="reference internal" href="asyncio-eventloop.html#asyncio.AbstractEventLoop.create_task" title="asyncio.AbstractEventLoop.create_task"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.create_task()</span></code></a> method,
+the execution of the coroutine object will never be scheduled which is
+probably a bug.  <a class="reference internal" href="#asyncio-debug-mode"><span class="std std-ref">Enable the debug mode of asyncio</span></a>
+to <a class="reference internal" href="#asyncio-logger"><span class="std std-ref">log a warning</span></a> to detect it.</p>
+<p>Example with the bug:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;never scheduled&quot;</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Output in debug mode:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Coroutine</span> <span class="n">test</span><span class="p">()</span> <span class="n">at</span> <span class="n">test</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">3</span> <span class="n">was</span> <span class="n">never</span> <span class="n">yielded</span> <span class="kn">from</span>
+<span class="nn">Coroutine</span> <span class="nb">object</span> <span class="n">created</span> <span class="n">at</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;test.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">7</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="n">test</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The fix is to call the <a class="reference internal" href="asyncio-task.html#asyncio.ensure_future" title="asyncio.ensure_future"><code class="xref py py-func docutils literal notranslate"><span class="pre">ensure_future()</span></code></a> function or the
+<a class="reference internal" href="asyncio-eventloop.html#asyncio.AbstractEventLoop.create_task" title="asyncio.AbstractEventLoop.create_task"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.create_task()</span></code></a> method with the coroutine object.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#asyncio-pending-task-destroyed"><span class="std std-ref">Pending task destroyed</span></a>.</p>
+</div>
+</div>
+<div class="section" id="detect-exceptions-never-consumed">
+<h2>18.5.9.7. Detect exceptions never consumed<a class="headerlink" href="#detect-exceptions-never-consumed" title="Permalink to this headline">¶</a></h2>
+<p>Python usually calls <a class="reference internal" href="sys.html#sys.excepthook" title="sys.excepthook"><code class="xref py py-func docutils literal notranslate"><span class="pre">sys.excepthook()</span></code></a> on unhandled exceptions. If
+<a class="reference internal" href="asyncio-task.html#asyncio.Future.set_exception" title="asyncio.Future.set_exception"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Future.set_exception()</span></code></a> is called, but the exception is never consumed,
+<a class="reference internal" href="sys.html#sys.excepthook" title="sys.excepthook"><code class="xref py py-func docutils literal notranslate"><span class="pre">sys.excepthook()</span></code></a> is not called. Instead, <a class="reference internal" href="#asyncio-logger"><span class="std std-ref">a log is emitted</span></a> when the future is deleted by the garbage collector, with the
+traceback where the exception was raised.</p>
+<p>Example of unhandled exception:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+<span class="k">def</span> <span class="nf">bug</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;not consumed&quot;</span><span class="p">)</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">bug</span><span class="p">())</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Task</span> <span class="n">exception</span> <span class="n">was</span> <span class="n">never</span> <span class="n">retrieved</span>
+<span class="n">future</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">Task</span> <span class="n">finished</span> <span class="n">coro</span><span class="o">=&lt;</span><span class="n">coro</span><span class="p">()</span> <span class="n">done</span><span class="p">,</span> <span class="n">defined</span> <span class="n">at</span> <span class="n">asyncio</span><span class="o">/</span><span class="n">coroutines</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">139</span><span class="o">&gt;</span> <span class="n">exception</span><span class="o">=</span><span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;not consumed&#39;</span><span class="p">,)</span><span class="o">&gt;</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;asyncio/tasks.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">237</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_step</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">coro</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s2">&quot;asyncio/coroutines.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">141</span><span class="p">,</span> <span class="ow">in</span> <span class="n">coro</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s2">&quot;test.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">5</span><span class="p">,</span> <span class="ow">in</span> <span class="n">bug</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;not consumed&quot;</span><span class="p">)</span>
+<span class="ne">Exception</span><span class="p">:</span> <span class="ow">not</span> <span class="n">consumed</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#asyncio-debug-mode"><span class="std std-ref">Enable the debug mode of asyncio</span></a> to get the
+traceback where the task was created. Output in debug mode:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Task</span> <span class="n">exception</span> <span class="n">was</span> <span class="n">never</span> <span class="n">retrieved</span>
+<span class="n">future</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">Task</span> <span class="n">finished</span> <span class="n">coro</span><span class="o">=&lt;</span><span class="n">bug</span><span class="p">()</span> <span class="n">done</span><span class="p">,</span> <span class="n">defined</span> <span class="n">at</span> <span class="n">test</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">3</span><span class="o">&gt;</span> <span class="n">exception</span><span class="o">=</span><span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;not consumed&#39;</span><span class="p">,)</span> <span class="n">created</span> <span class="n">at</span> <span class="n">test</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">8</span><span class="o">&gt;</span>
+<span class="n">source_traceback</span><span class="p">:</span> <span class="n">Object</span> <span class="n">created</span> <span class="n">at</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;test.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">8</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">bug</span><span class="p">())</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;asyncio/tasks.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">237</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_step</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">coro</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s2">&quot;asyncio/coroutines.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">79</span><span class="p">,</span> <span class="ow">in</span> <span class="fm">__next__</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s2">&quot;asyncio/coroutines.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">141</span><span class="p">,</span> <span class="ow">in</span> <span class="n">coro</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s2">&quot;test.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">5</span><span class="p">,</span> <span class="ow">in</span> <span class="n">bug</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;not consumed&quot;</span><span class="p">)</span>
+<span class="ne">Exception</span><span class="p">:</span> <span class="ow">not</span> <span class="n">consumed</span>
+</pre></div>
+</div>
+<p>There are different options to fix this issue. The first option is to chain the
+coroutine in another coroutine and use classic try/except:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+<span class="k">def</span> <span class="nf">handle_exception</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield from</span> <span class="n">bug</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;exception consumed&quot;</span><span class="p">)</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">handle_exception</span><span class="p">())</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Another option is to use the <a class="reference internal" href="asyncio-eventloop.html#asyncio.AbstractEventLoop.run_until_complete" title="asyncio.AbstractEventLoop.run_until_complete"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractEventLoop.run_until_complete()</span></code></a>
+function:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">bug</span><span class="p">())</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;exception consumed&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="asyncio-task.html#asyncio.Future.exception" title="asyncio.Future.exception"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Future.exception()</span></code></a> method.</p>
+</div>
+</div>
+<div class="section" id="chain-coroutines-correctly">
+<h2>18.5.9.8. Chain coroutines correctly<a class="headerlink" href="#chain-coroutines-correctly" title="Permalink to this headline">¶</a></h2>
+<p>When a coroutine function calls other coroutine functions and tasks, they
+should be chained explicitly with <code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span></code>. Otherwise, the execution is
+not guaranteed to be sequential.</p>
+<p>Example with different bugs using <a class="reference internal" href="asyncio-task.html#asyncio.sleep" title="asyncio.sleep"><code class="xref py py-func docutils literal notranslate"><span class="pre">asyncio.sleep()</span></code></a> to simulate slow
+operations:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+<span class="k">def</span> <span class="nf">create</span><span class="p">():</span>
+    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(1) create file&quot;</span><span class="p">)</span>
+
+<span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+<span class="k">def</span> <span class="nf">write</span><span class="p">():</span>
+    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(2) write into file&quot;</span><span class="p">)</span>
+
+<span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+<span class="k">def</span> <span class="nf">close</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(3) close file&quot;</span><span class="p">)</span>
+
+<span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">create</span><span class="p">())</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">write</span><span class="p">())</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">close</span><span class="p">())</span>
+    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">test</span><span class="p">())</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pending tasks at exit: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="o">.</span><span class="n">all_tasks</span><span class="p">(</span><span class="n">loop</span><span class="p">))</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Expected output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(1) create file
+(2) write into file
+(3) close file
+Pending tasks at exit: set()
+</pre></div>
+</div>
+<p>Actual output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(3) close file
+(2) write into file
+Pending tasks at exit: {&lt;Task pending create() at test.py:7 wait_for=&lt;Future pending cb=[Task._wakeup()]&gt;&gt;}
+Task was destroyed but it is pending!
+task: &lt;Task pending create() done at test.py:5 wait_for=&lt;Future pending cb=[Task._wakeup()]&gt;&gt;
+</pre></div>
+</div>
+<p>The loop stopped before the <code class="docutils literal notranslate"><span class="pre">create()</span></code> finished, <code class="docutils literal notranslate"><span class="pre">close()</span></code> has been called
+before <code class="docutils literal notranslate"><span class="pre">write()</span></code>, whereas coroutine functions were called in this order:
+<code class="docutils literal notranslate"><span class="pre">create()</span></code>, <code class="docutils literal notranslate"><span class="pre">write()</span></code>, <code class="docutils literal notranslate"><span class="pre">close()</span></code>.</p>
+<p>To fix the example, tasks must be marked with <code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span></code>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">create</span><span class="p">())</span>
+    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">write</span><span class="p">())</span>
+    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">close</span><span class="p">())</span>
+    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Or without <code class="docutils literal notranslate"><span class="pre">asyncio.ensure_future()</span></code>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="k">yield from</span> <span class="n">create</span><span class="p">()</span>
+    <span class="k">yield from</span> <span class="n">write</span><span class="p">()</span>
+    <span class="k">yield from</span> <span class="n">close</span><span class="p">()</span>
+    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pending-task-destroyed">
+<span id="asyncio-pending-task-destroyed"></span><h2>18.5.9.9. Pending task destroyed<a class="headerlink" href="#pending-task-destroyed" title="Permalink to this headline">¶</a></h2>
+<p>If a pending task is destroyed, the execution of its wrapped <a class="reference internal" href="asyncio-task.html#coroutine"><span class="std std-ref">coroutine</span></a> did not complete. It is probably a bug and so a warning is logged.</p>
+<p>Example of log:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Task was destroyed but it is pending!
+task: &lt;Task pending coro=&lt;kill_me() done, defined at test.py:5&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt;&gt;
+</pre></div>
+</div>
+<p><a class="reference internal" href="#asyncio-debug-mode"><span class="std std-ref">Enable the debug mode of asyncio</span></a> to get the
+traceback where the task was created. Example of log in debug mode:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Task was destroyed but it is pending!
+source_traceback: Object created at (most recent call last):
+  File &quot;test.py&quot;, line 15, in &lt;module&gt;
+    task = asyncio.ensure_future(coro, loop=loop)
+task: &lt;Task pending coro=&lt;kill_me() done, defined at test.py:5&gt; wait_for=&lt;Future pending cb=[Task._wakeup()] created at test.py:7&gt; created at test.py:15&gt;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#asyncio-coroutine-not-scheduled"><span class="std std-ref">Detect coroutine objects never scheduled</span></a>.</p>
+</div>
+</div>
+<div class="section" id="close-transports-and-event-loops">
+<span id="asyncio-close-transports"></span><h2>18.5.9.10. Close transports and event loops<a class="headerlink" href="#close-transports-and-event-loops" title="Permalink to this headline">¶</a></h2>
+<p>When a transport is no more needed, call its <code class="docutils literal notranslate"><span class="pre">close()</span></code> method to release
+resources. Event loops must also be closed explicitly.</p>
+<p>If a transport or an event loop is not closed explicitly, a
+<a class="reference internal" href="exceptions.html#ResourceWarning" title="ResourceWarning"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ResourceWarning</span></code></a> warning will be emitted in its destructor. By default,
+<a class="reference internal" href="exceptions.html#ResourceWarning" title="ResourceWarning"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ResourceWarning</span></code></a> warnings are ignored. The <a class="reference internal" href="#asyncio-debug-mode"><span class="std std-ref">Debug mode of asyncio</span></a> section explains how to display them.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">18.5.9. Develop with asyncio</a><ul>
+<li><a class="reference internal" href="#debug-mode-of-asyncio">18.5.9.1. Debug mode of asyncio</a></li>
+<li><a class="reference internal" href="#cancellation">18.5.9.2. Cancellation</a></li>
+<li><a class="reference internal" href="#concurrency-and-multithreading">18.5.9.3. Concurrency and multithreading</a></li>
+<li><a class="reference internal" href="#handle-blocking-functions-correctly">18.5.9.4. Handle blocking functions correctly</a></li>
+<li><a class="reference internal" href="#logging">18.5.9.5. Logging</a></li>
+<li><a class="reference internal" href="#detect-coroutine-objects-never-scheduled">18.5.9.6. Detect coroutine objects never scheduled</a></li>
+<li><a class="reference internal" href="#detect-exceptions-never-consumed">18.5.9.7. Detect exceptions never consumed</a></li>
+<li><a class="reference internal" href="#chain-coroutines-correctly">18.5.9.8. Chain coroutines correctly</a></li>
+<li><a class="reference internal" href="#pending-task-destroyed">18.5.9.9. Pending task destroyed</a></li>
+<li><a class="reference internal" href="#close-transports-and-event-loops">18.5.9.10. Close transports and event loops</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="asyncio-queue.html"
+                        title="previous chapter">18.5.8. Queues</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="asyncore.html"
+                        title="next chapter">18.6. <code class="docutils literal notranslate"><span class="pre">asyncore</span></code> — Asynchronous socket handler</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Report a Bug</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/3.6/Doc/library/asyncio-dev.rst"
+            rel="nofollow">Show Source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="asyncore.html" title="18.6. asyncore — Asynchronous socket handler"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="asyncio-queue.html" title="18.5.8. Queues"
+             >previous</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">en</span>
+          <span class="version_switcher_placeholder">3.6.5</span>
+          <a href="../index.html">Documentation </a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >The Python Standard Library</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="ipc.html" >18. Interprocess Communication and Networking</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="asyncio.html" >18.5. <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> — Asynchronous I/O, event loop, coroutines and tasks</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Quick search" type="text" name="q" />
+          <input type="submit" value="Go" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../copyright.html">Copyright</a> 2001-2018, Python Software Foundation.
+    <br />
+    The Python Software Foundation is a non-profit corporation.
+    <a href="https://www.python.org/psf/donations/">Please donate.</a>
+    <br />
+    Last updated on May 17, 2018.
+    <a href="../bugs.html">Found a bug</a>?
+    <br />
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.7.4.
+    </div>
+
+  </body>
+</html>

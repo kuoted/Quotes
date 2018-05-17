@@ -14,18 +14,21 @@ import pyqtgraph as pg
 import tushare as ts
 import candle_stick
 from candle_stick import *
+
 import CandlestickItem
+import candle_stick
 
 class QuotesMainWindow( QMainWindow ):
     def __init__(self, ui_file, parent = None):
         super(QuotesMainWindow, self).__init__( parent )
-        self.mainWindow = QtWidgets.QMainWindow( )
-        self.mainwidget = PyQt5.uic.loadUi( ui_file,  self.mainWindow )
-        self.mainWindow.setCentralWidget(CandlestickItem.DrawChart.chart())
+        #self.main_window = QtWidgets.QMainWindow( )
+        self.mainwidget = PyQt5.uic.loadUi( ui_file,  self )
+        #self.setCentralWidget(CandlestickItem.DrawChart.chart())
+        self.setCentralWidget(candle_stick.DrawChart().pyqtgraphDrawChart())
 
     def setupUi( self ):
-        self.mainWindow.setObjectName( "MainWindow" )
-        self.mainWindow.resize(800, 600)
+        self.setObjectName( "MainWindow" )
+        self.resize(800, 600)
         return
 
 if __name__ == "__main__":
@@ -40,5 +43,5 @@ if __name__ == "__main__":
         app = QtGui.QApplication(sys.argv)
         ui = QuotesMainWindow( ui_file )
         ui.setupUi( )
-        ui.mainWindow.show()
+        ui.show()
         sys.exit(app.exec_())
