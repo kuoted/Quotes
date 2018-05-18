@@ -20,4 +20,4 @@ def Decode(data):
         return False
 
 if __name__ == '__main__':
-    print Decode("{\"status\":\"2\"}")
+    print(Decode("{\"status\":\"2\"}"))

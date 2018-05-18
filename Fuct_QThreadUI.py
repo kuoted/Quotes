@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import *
-from PyQt4 import QtCore
+from PyQt5.QtCore import *
+
 import Fuct_LocalData
 import Fuct_Limit
 

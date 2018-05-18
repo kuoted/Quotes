@@ -39,4 +39,4 @@ def get(event):
     return Fuct_Http.request_post(get_test, event)
 
 if __name__ == '__main__':
-    print "Register：", Register({"userName":"KingMagic2","passWord":"Huawei@123","phone":"17358536853","qq":"542601619"})
+    print( "Register：", Register({"userName":"KingMagic2","passWord":"Huawei@123","phone":"17358536853","qq":"542601619"}))

@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import os
+import importlib
 import sys
-import Fuct_DataAPI
 import datetime
+
+import Fuct_DataAPI
+
 """
 获取数据接口。
 读取本地数据：
@@ -49,6 +52,7 @@ def RankList_Data(date):
 # def
 
 if __name__ == '__main__':
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
-    print RankList_Data("2017-06-12")
+    importlib.reload(sys)
+#    sys.setdefaultencoding('utf-8')
+
+    print(RankList_Data("2017-06-12"))
