@@ -4,12 +4,15 @@
 Demonstrate creation of a custom graphic (a candlestick plot)
 
 """
+from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtWidgets import QApplication, QMainWindow
+
 import datetime
 from matplotlib.dates import date2num
 import pyqtgraph as pg
 import tushare as ts
 
-from pyqtgraph import QtCore, QtGui
+#from pyqtgraph import QtCore, QtGui
 ## Create a subclass of GraphicsObject.
 ## The only required methods are paint() and boundingRect() 
 ## (see QGraphicsItem documentation)
@@ -27,17 +30,17 @@ class CandlestickItem(pg.GraphicsObject):
         p = QtGui.QPainter(self.picture)
         p.setPen(pg.mkPen('w'))
         w = (self.data[1][0] - self.data[0][0]) / 3.
-        for (t, open, close, min, max) in self.data:
-            p.drawLine(QtCore.QPointF(t, min), QtCore.QPointF(t, max))
+        for (t, open, close, min, max) in self.data:            
             if open > close:
-                p.setBrush(pg.mkBrush('r'))
+                p.setBrush(pg.mkBrush('g'))
                 p.drawRect(QtCore.QRectF(t-w, open, w*2, open-close))
             elif close > open:
-                p.setBrush(pg.mkBrush('g'))
+                p.setBrush(pg.mkBrush('r'))
                 p.drawRect(QtCore.QRectF(t-w, open, w*2, close-open))
             else:
                 p.setBrush(pg.mkBrush('w'))
                 p.drawRect(QtCore.QRectF(t-w, open, w*2, 1))
+            p.drawLine(QtCore.QPointF(t, min), QtCore.QPointF(t, max))
         p.end()
 
     def paint(self, p, *args):
@@ -50,7 +53,7 @@ class CandlestickItem(pg.GraphicsObject):
         return QtCore.QRectF(self.picture.boundingRect())
 
 class DrawChart():
-    def chart( ):
+    def Chart(  ):
         hist_data = ts.get_hist_data('600519',start='2017-05-01',end='2017-11-24')
         data_list = []
         for dates,row in hist_data.iterrows():
@@ -75,7 +78,8 @@ if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     
     main_window = QtGui.QMainWindow()
-    main_window.setCentralWidget( DrawChart.chart() )
+    main_window.setWindowTitle(__file__)
+    main_window.setCentralWidget( DrawChart.Chart() )
     main_window.show()
 
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
