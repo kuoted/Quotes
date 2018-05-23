@@ -140,6 +140,14 @@ class Ui_MainWindow(object):
         self._menu_bar.addAction(self._edit_menu.menuAction())
         self._menu_bar.addAction(self._view_menu.menuAction())
         self._tool_bar.addSeparator()
+        self._tool_bar.addAction(self.action_kline_1m)
+        self._tool_bar.addAction(self.action_kline_5m)
+        self._tool_bar.addAction(self.action_kline_30m)
+        self._tool_bar.addAction(self.action_kline_days)
+        self._tool_bar.addAction(self.action_kline_week)
+        self._tool_bar.addAction(self.action_kline_month)
+        self._tool_bar.addAction(self.action_kline_season)
+        self._tool_bar.addAction(self.action_kline_year)
         self._draw_panel.addSeparator()
 
         self.retranslateUi(MainWindow)
@@ -147,6 +155,7 @@ class Ui_MainWindow(object):
         self.action_kline_1m.triggered['bool'].connect(MainWindow.onKLineChanged)
         self.action_kline_30m.triggered['bool'].connect(MainWindow.onKLineChanged)
         self.horizontalSlider.rangeChanged['int','int'].connect(MainWindow.onKLinePeriodChanged)
+        self._tool_bar.actionTriggered['QAction*'].connect(MainWindow.onActionTriggered)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

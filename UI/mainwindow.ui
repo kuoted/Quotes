@@ -139,6 +139,14 @@
     <bool>false</bool>
    </attribute>
    <addaction name="separator"/>
+   <addaction name="action_kline_1m"/>
+   <addaction name="action_kline_5m"/>
+   <addaction name="action_kline_30m"/>
+   <addaction name="action_kline_days"/>
+   <addaction name="action_kline_week"/>
+   <addaction name="action_kline_month"/>
+   <addaction name="action_kline_season"/>
+   <addaction name="action_kline_year"/>
   </widget>
   <widget class="QDockWidget" name="_stocks_info_dock">
    <property name="features">
@@ -311,9 +319,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>_tool_bar</sender>
+   <signal>actionTriggered(QAction*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onActionTriggered(QAction*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>740</x>
+     <y>33</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>740</x>
+     <y>465</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onKLineChanged(bool)</slot>
   <slot>onKLinePeriodChanged(int,int)</slot>
+  <slot>onActionTriggered(QAction*)</slot>
  </slots>
 </ui>

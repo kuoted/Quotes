@@ -49,7 +49,10 @@ class QuotesMainWindow( QMainWindow ):
     
     def onKLinePeriodChanged(min, max):
         return
-        
+    def onActionTriggered( me, action_ ):
+        print( "action_" + action_.objectName())
+        return
+
 if __name__ == "__main__":
     import sys
     import os
