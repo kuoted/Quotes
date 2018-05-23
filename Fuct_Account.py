@@ -18,20 +18,24 @@ get_test = host+"get/"
 
 # 登录
 def Login(event):
+    return "{\"status\":\"0\"}"
     event = Fuct_Json.Encode(event)
     return Fuct_Http.request_post(login_url, event)
 
 # 登出
 def Logout(event):
+    return '0'
     return Fuct_Http.request_post(register_url, event)
 
 # 账户注册
 def Register(event):
+    return '0'
     event = Fuct_Json.Encode(event)
     return Fuct_Http.request_post(register_url, event)
 
 # 检查单点登录
 def CheckLogin(event):
+    return '0'
     return Fuct_Http.request_post(register_url, event)
 
 # 测试
@@ -39,4 +43,4 @@ def get(event):
     return Fuct_Http.request_post(get_test, event)
 
 if __name__ == '__main__':
-    print( "Register：", Register({"userName":"KingMagic2","passWord":"Huawei@123","phone":"17358536853","qq":"542601619"}))
+    print( "Register: ", Register({"userName":"KingMagic2","passWord":"Huawei@123","phone":"17358536853","qq":"542601619"}))

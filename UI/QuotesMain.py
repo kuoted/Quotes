@@ -16,39 +16,25 @@ import numpy as np
 import CandlestickItem
 import candle_stick
 
-def clicked(plot, points):
-    global lastClicked
-    for p in lastClicked:
-        p.resetPen()
-    print("clicked points", points)
-    for p in points:
-        p.setPen('b', width=2)
-    lastClicked = points
-    return
-
 class QuotesMainWindow( QMainWindow ):
     def __init__(self, ui_file, parent = None):
         super(QuotesMainWindow, self).__init__( parent )
         self.main_window = QtWidgets.QMainWindow( )
-        self.mainwidget = uic.loadUi( ui_file,  self )
-        #self.setCentralWidget(CandlestickItem.DrawChart.chart())
-        #self.setCentralWidget(candle_stick.DrawChart().pyqtgraphDrawChart())
-        #self.lastClicked = []
-        #self.setupGUI()
+        if ui_file:
+            get = uic.loadUi( ui_file,  self )
+        else:         
+           self.setupGUI()
         
     def setupGUI( self ):
         cw = QtWidgets.QWidget()
         l = QtWidgets.QVBoxLayout()
-        cw.setLayout(l)
-        
+        cw.setLayout(l)        
         self.iner_kline_plot = CandlestickItem.DrawChart.Chart( )
         self.iner_macd_plot = candle_stick.DrawChart( ).Chart( )
         #self.iner_kline_plot.setXLink( self.iner_macd_plot )
-        #self.iner_macd_plot.setXLink( self.iner_kline_plot )
-        
+        #self.iner_macd_plot.setXLink( self.iner_kline_plot )        
         l.addWidget(self.iner_kline_plot)
-        l.addWidget(self.iner_macd_plot)
-        
+        l.addWidget(self.iner_macd_plot)        
         self.setCentralWidget( cw )
         return
 
@@ -70,9 +56,7 @@ if __name__ == "__main__":
     import qdarkstyle
     
     ui_file = os.path.dirname(__file__) + "/mainwindow.ui"
-                
-    if ui_file:
-        app = QApplication(sys.argv)
-        ui = QuotesMainWindow( ui_file )
-        ui.show()
-        sys.exit(app.exec_())
+    app = QApplication(sys.argv)
+    ui = QuotesMainWindow( ui_file )        
+    ui.show()
+    sys.exit(app.exec_())

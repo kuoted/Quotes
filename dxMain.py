@@ -10,14 +10,11 @@ import os
 import sys
 import csv
 
-from PyQt5 import QtWidgets
-from PyQt5 import QtGui
-from PyQt5 import QtCore
+from PyQt5 import QtGui,QtCore, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from functools import partial
-
 
 # 自定义模块
 import Fuct_QThreadUI
@@ -33,12 +30,12 @@ class MainWindow(QMainWindow):
     signalStatusBar = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
-        super.__init__(self)
+        super(MainWindow, self).__init__( parent )
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         # 初始化登录窗口
         self.LoginUI = Login_Start.MainWindow()
-        self.LoginUI.show()
+        #self.LoginUI.show()
         self.LoginUI.on_login_success.connect( self.onLogin )
         #self.connect(self.LoginUI, QtCore.SIGNAL("transfer_login"), self.setLoginStatus)
         # 设置界面样式
@@ -51,8 +48,9 @@ class MainWindow(QMainWindow):
         self.ui.sizeGrip_layout.setAlignment(sizeGrip, Qt.AlignRight)
         # 允许关闭tab
         self.ui.tabWidget.setTabsClosable(True)  # 显示关闭按钮
-        #self.connect(self.ui.tabWidget, SIGNAL("tabCloseRequested(int)"), self.closeTab)
-#        self.ui.tabWidget.connectNotify(self.closeTab)
+#        self.connect(self.ui.tabWidget, SIGNAL("tabCloseRequested(int)"), self.closeTab)      
+        self.ui.tabWidget.tabCloseRequested.connect( self.closeTab )
+#        self.ui.tabWidget.connectNotify.connect(self.closeTab)
         # 设置次级菜单
         self.Menu_Setting()
         # 设置主菜单与副菜单映射关系
@@ -103,7 +101,8 @@ class MainWindow(QMainWindow):
         # time.sleep(10)
         # 龙虎榜_查询近一天
         self.thread = Fuct_QThreadUI.QPushButton_cRankStocks_clicked(date)
-        self.connect(self.thread, QtCore.SIGNAL("SIGNAL_QPushButton_cRankStocks"), self.QThread_RankStocks)
+        #self.connect(self.thread, QtCore.SIGNAL("SIGNAL_QPushButton_cRankStocks"), self.QThread_RankStocks)
+        self.thread.cRankStocks_finished.connect( self.QThread_RankStocks )
         self.thread.start()
         self.MyTable.hide()
 
@@ -120,7 +119,8 @@ class MainWindow(QMainWindow):
             self.show_message(u"时间不正确，请检查后重试！")
         else:
             self.thread = Fuct_QThreadUI.QPushButton_cLimit_clicked(date)
-            self.connect(self.thread, QtCore.SIGNAL("SIGNAL_QPushButton_cLimit"), self.QPushButton_cLimit)
+            #self.connect(self.thread, QtCore.SIGNAL("SIGNAL_QPushButton_cLimit"), self.QPushButton_cLimit)
+            self.thread.climit_finished.connect(self.QPushButton_cLimit)
             self.thread.start()
             self.MyTable.hide()
             self.show_message(u"数据引擎预计耗时2分钟，请耐心等待！")
@@ -157,7 +157,7 @@ class MainWindow(QMainWindow):
     # 系统函数----------------------------------------------------------------------
     def show_message(self, log):
         """消息提示框"""
-        QtGui.QMessageBox.information(self, u"提示", log)
+        QMessageBox.information(self, u"提示", log)
 
     def Menu_Link(self):
         # 设置主菜单与副菜单映射关系
@@ -380,9 +380,9 @@ class MainWindow(QMainWindow):
                 Info = Data[j]
                 # 为保证排序正确，self.dataList数据中不包含%
                 # 如果表格头中包含%，在设置数据时将%加上
-                if "%" in self.headerList[j]:
-                    Info = unicode(Info) + u"%"
-                Info = unicode(Info)
+                #if "%" in self.headerList[j]:
+                #    Info = unicode(Info) + u"%"
+                #Info = unicode(Info)
                 newItem = QTableWidgetItem(Info)
                 # 添加提示气泡
                 newItem.setToolTip(Info)
@@ -397,13 +397,25 @@ class MainWindow(QMainWindow):
                 self.MyTable.setItem(i, j, newItem)
                 newItem.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         # 绑定双击事件
-        self.connect(self.MyTable, SIGNAL("itemDoubleClicked (QTableWidgetItem*)"), self.DoubleClicked)
+        #self.connect(self.MyTable, SIGNAL("itemDoubleClicked (QTableWidgetItem*)"), self.DoubleClicked)
+        self.MyTable.itemDoubleClicked.connect(self.DoubleClicked)
         self.MyTable.show()
-
+        return
+        
+    @pyqtSlot(int)
     def closeTab(self, index):
         # 关闭Tab页面
         self.ui.tabWidget.removeTab(index)
 
+    @pyqtSlot(int, name='on_spinbox_valueChanged')
+    def spinbox_int_value(self, i):
+        # i will be an integer.
+        pass
+    
+    @pyqtSlot(str, name='on_spinbox_valueChanged')
+    def spinbox_qstring_value(self, s):
+        # s will be a Python string object (or a QString if they are enabled).
+        pass
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
