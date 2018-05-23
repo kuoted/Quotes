@@ -1,82 +1,130 @@
-#!/usr/bin/env python
-# Copyright (c) 2008 Qtrac Ltd. All rights reserved.
-# This program or module is free software: you can redistribute it and/or
-# modify it under the terms of the GNU General Public License as published
-# by the Free Software Foundation, either version 2 of the License, or
-# version 3 of the License, or (at your option) any later version. It is
-# provided for educational purposes and is distributed in the hope that
-# it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-# the GNU General Public License for more details.
+# -*- coding: utf-8 -*-
 
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-from future_builtins import *
+# Form implementation generated from reading ui file 'findandreplacedlg.ui'
+#
+# Created by: PyQt5 UI code generator 5.6
+#
+# WARNING! All changes made in this file will be lost!
 
-from PyQt4.QtCore import (Qt, SIGNAL, pyqtSignature)
-from PyQt4.QtGui import (QApplication, QDialog, QLayout)
-import ui_findandreplacedlg
+from PyQt5 import QtCore, QtGui, QtWidgets
 
+class Ui_FindAndReplaceDlg(object):
+    def setupUi(self, FindAndReplaceDlg):
+        FindAndReplaceDlg.setObjectName("FindAndReplaceDlg")
+        FindAndReplaceDlg.resize(355, 274)
+        self.hboxlayout = QtWidgets.QHBoxLayout(FindAndReplaceDlg)
+        self.hboxlayout.setContentsMargins(9, 9, 9, 9)
+        self.hboxlayout.setSpacing(6)
+        self.hboxlayout.setObjectName("hboxlayout")
+        self.vboxlayout = QtWidgets.QVBoxLayout()
+        self.vboxlayout.setContentsMargins(0, 0, 0, 0)
+        self.vboxlayout.setSpacing(6)
+        self.vboxlayout.setObjectName("vboxlayout")
+        self.gridlayout = QtWidgets.QGridLayout()
+        self.gridlayout.setContentsMargins(0, 0, 0, 0)
+        self.gridlayout.setSpacing(6)
+        self.gridlayout.setObjectName("gridlayout")
+        self.replaceLineEdit = QtWidgets.QLineEdit(FindAndReplaceDlg)
+        self.replaceLineEdit.setObjectName("replaceLineEdit")
+        self.gridlayout.addWidget(self.replaceLineEdit, 1, 1, 1, 1)
+        self.findLineEdit = QtWidgets.QLineEdit(FindAndReplaceDlg)
+        self.findLineEdit.setObjectName("findLineEdit")
+        self.gridlayout.addWidget(self.findLineEdit, 0, 1, 1, 1)
+        self.label_2 = QtWidgets.QLabel(FindAndReplaceDlg)
+        self.label_2.setObjectName("label_2")
+        self.gridlayout.addWidget(self.label_2, 1, 0, 1, 1)
+        self.label = QtWidgets.QLabel(FindAndReplaceDlg)
+        self.label.setObjectName("label")
+        self.gridlayout.addWidget(self.label, 0, 0, 1, 1)
+        self.vboxlayout.addLayout(self.gridlayout)
+        self.vboxlayout1 = QtWidgets.QVBoxLayout()
+        self.vboxlayout1.setContentsMargins(0, 0, 0, 0)
+        self.vboxlayout1.setSpacing(6)
+        self.vboxlayout1.setObjectName("vboxlayout1")
+        self.caseCheckBox = QtWidgets.QCheckBox(FindAndReplaceDlg)
+        self.caseCheckBox.setObjectName("caseCheckBox")
+        self.vboxlayout1.addWidget(self.caseCheckBox)
+        self.wholeCheckBox = QtWidgets.QCheckBox(FindAndReplaceDlg)
+        self.wholeCheckBox.setChecked(True)
+        self.wholeCheckBox.setObjectName("wholeCheckBox")
+        self.vboxlayout1.addWidget(self.wholeCheckBox)
+        self.vboxlayout.addLayout(self.vboxlayout1)
+        spacerItem = QtWidgets.QSpacerItem(231, 16, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.vboxlayout.addItem(spacerItem)
+        self.moreFrame = QtWidgets.QFrame(FindAndReplaceDlg)
+        self.moreFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.moreFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.moreFrame.setObjectName("moreFrame")
+        self.vboxlayout2 = QtWidgets.QVBoxLayout(self.moreFrame)
+        self.vboxlayout2.setContentsMargins(9, 9, 9, 9)
+        self.vboxlayout2.setSpacing(6)
+        self.vboxlayout2.setObjectName("vboxlayout2")
+        self.backwardsCheckBox = QtWidgets.QCheckBox(self.moreFrame)
+        self.backwardsCheckBox.setObjectName("backwardsCheckBox")
+        self.vboxlayout2.addWidget(self.backwardsCheckBox)
+        self.regexCheckBox = QtWidgets.QCheckBox(self.moreFrame)
+        self.regexCheckBox.setObjectName("regexCheckBox")
+        self.vboxlayout2.addWidget(self.regexCheckBox)
+        self.ignoreNotesCheckBox = QtWidgets.QCheckBox(self.moreFrame)
+        self.ignoreNotesCheckBox.setObjectName("ignoreNotesCheckBox")
+        self.vboxlayout2.addWidget(self.ignoreNotesCheckBox)
+        self.vboxlayout.addWidget(self.moreFrame)
+        self.hboxlayout.addLayout(self.vboxlayout)
+        self.line = QtWidgets.QFrame(FindAndReplaceDlg)
+        self.line.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.hboxlayout.addWidget(self.line)
+        self.vboxlayout3 = QtWidgets.QVBoxLayout()
+        self.vboxlayout3.setContentsMargins(0, 0, 0, 0)
+        self.vboxlayout3.setSpacing(6)
+        self.vboxlayout3.setObjectName("vboxlayout3")
+        self.findButton = QtWidgets.QPushButton(FindAndReplaceDlg)
+        self.findButton.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.findButton.setObjectName("findButton")
+        self.vboxlayout3.addWidget(self.findButton)
+        self.replaceButton = QtWidgets.QPushButton(FindAndReplaceDlg)
+        self.replaceButton.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.replaceButton.setObjectName("replaceButton")
+        self.vboxlayout3.addWidget(self.replaceButton)
+        self.closeButton = QtWidgets.QPushButton(FindAndReplaceDlg)
+        self.closeButton.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.closeButton.setObjectName("closeButton")
+        self.vboxlayout3.addWidget(self.closeButton)
+        self.moreButton = QtWidgets.QPushButton(FindAndReplaceDlg)
+        self.moreButton.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.moreButton.setCheckable(True)
+        self.moreButton.setObjectName("moreButton")
+        self.vboxlayout3.addWidget(self.moreButton)
+        spacerItem1 = QtWidgets.QSpacerItem(21, 16, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.vboxlayout3.addItem(spacerItem1)
+        self.hboxlayout.addLayout(self.vboxlayout3)
+        self.label_2.setBuddy(self.replaceLineEdit)
+        self.label.setBuddy(self.findLineEdit)
 
-class FindAndReplaceDlg(QDialog,
-        ui_findandreplacedlg.Ui_FindAndReplaceDlg):
+        self.retranslateUi(FindAndReplaceDlg)
+        self.closeButton.clicked.connect(FindAndReplaceDlg.reject)
+        self.moreButton.toggled['bool'].connect(self.moreFrame.setVisible)
+        QtCore.QMetaObject.connectSlotsByName(FindAndReplaceDlg)
+        FindAndReplaceDlg.setTabOrder(self.findLineEdit, self.replaceLineEdit)
+        FindAndReplaceDlg.setTabOrder(self.replaceLineEdit, self.caseCheckBox)
+        FindAndReplaceDlg.setTabOrder(self.caseCheckBox, self.wholeCheckBox)
+        FindAndReplaceDlg.setTabOrder(self.wholeCheckBox, self.backwardsCheckBox)
+        FindAndReplaceDlg.setTabOrder(self.backwardsCheckBox, self.regexCheckBox)
+        FindAndReplaceDlg.setTabOrder(self.regexCheckBox, self.ignoreNotesCheckBox)
 
-    def __init__(self, parent=None):
-        super(FindAndReplaceDlg, self).__init__(parent)
-        self.setupUi(self)
-        self.moreFrame.hide()
-        self.layout().setSizeConstraint(QLayout.SetFixedSize)
-        self.updateUi()
-
-
-    @pyqtSignature("QString")
-    def on_findLineEdit_textEdited(self, text):
-        self.updateUi()
-
-
-    @pyqtSignature("")
-    def on_findButton_clicked(self):
-        self.emit(SIGNAL("find"), self.findLineEdit.text(),
-                self.caseCheckBox.isChecked(),
-                self.wholeCheckBox.isChecked(),
-                self.backwardsCheckBox.isChecked(),
-                self.regexCheckBox.isChecked(),
-                self.ignoreNotesCheckBox.isChecked())
-        
-        
-    @pyqtSignature("")
-    def on_replaceButton_clicked(self):
-        self.emit(SIGNAL("replace"), self.findLineEdit.text(),
-                self.replaceLineEdit.text(),
-                self.caseCheckBox.isChecked(),
-                self.wholeCheckBox.isChecked(),
-                self.backwardsCheckBox.isChecked(),
-                self.regexCheckBox.isChecked(),
-                self.ignoreNotesCheckBox.isChecked())
-        
-
-    def updateUi(self):
-        enable = not self.findLineEdit.text().isEmpty()
-        self.findButton.setEnabled(enable)
-        self.replaceButton.setEnabled(enable)
-
-
-
-if __name__ == "__main__":
-    import sys
-
-    def find(what, *args):
-        print("Find {0} {1}".format(what, [x for x in args]))
-
-    def replace(old, new, *args):
-        print("Replace {0} with {1} {2}".format(
-              old, new, [x for x in args]))
-
-    app = QApplication(sys.argv)
-    form = FindAndReplaceDlg()
-    form.connect(form, SIGNAL("find"), find)
-    form.connect(form, SIGNAL("replace"), replace)
-    form.show()
-    app.exec_()
+    def retranslateUi(self, FindAndReplaceDlg):
+        _translate = QtCore.QCoreApplication.translate
+        FindAndReplaceDlg.setWindowTitle(_translate("FindAndReplaceDlg", "Find and Replace"))
+        self.label_2.setText(_translate("FindAndReplaceDlg", "Replace w&ith:"))
+        self.label.setText(_translate("FindAndReplaceDlg", "Find &what:"))
+        self.caseCheckBox.setText(_translate("FindAndReplaceDlg", "&Case sensitive"))
+        self.wholeCheckBox.setText(_translate("FindAndReplaceDlg", "Wh&ole words"))
+        self.backwardsCheckBox.setText(_translate("FindAndReplaceDlg", "Search &Backwards"))
+        self.regexCheckBox.setText(_translate("FindAndReplaceDlg", "Regular E&xpression"))
+        self.ignoreNotesCheckBox.setText(_translate("FindAndReplaceDlg", "Ignore foot&notes and endnotes"))
+        self.findButton.setText(_translate("FindAndReplaceDlg", "&Find"))
+        self.replaceButton.setText(_translate("FindAndReplaceDlg", "&Replace"))
+        self.closeButton.setText(_translate("FindAndReplaceDlg", "Close"))
+        self.moreButton.setText(_translate("FindAndReplaceDlg", "&More"))
 

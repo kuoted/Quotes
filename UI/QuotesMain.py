@@ -6,7 +6,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 #import PyQt5
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, uic
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 import tushare as ts
@@ -29,12 +29,12 @@ def clicked(plot, points):
 class QuotesMainWindow( QMainWindow ):
     def __init__(self, ui_file, parent = None):
         super(QuotesMainWindow, self).__init__( parent )
-        #self.main_window = QtWidgets.QMainWindow( )
-        #self.mainwidget = PyQt5.uic.loadUi( ui_file,  self )
+        self.main_window = QtWidgets.QMainWindow( )
+        self.mainwidget = uic.loadUi( ui_file,  self )
         #self.setCentralWidget(CandlestickItem.DrawChart.chart())
         #self.setCentralWidget(candle_stick.DrawChart().pyqtgraphDrawChart())
-        self.lastClicked = []
-        self.setupGUI()
+        #self.lastClicked = []
+        #self.setupGUI()
         
     def setupGUI( self ):
         cw = QtWidgets.QWidget()
@@ -56,15 +56,23 @@ class QuotesMainWindow( QMainWindow ):
         self.setObjectName( "MainWindow" )
         self.resize(800, 600)
         return
-
+    
+    def onKLineChanged(self, changed):
+    
+        return
+    
+    def onKLinePeriodChanged(min, max):
+        return
+        
 if __name__ == "__main__":
     import sys
     import os
-    ui_file = os.path.dirname(__file__) + "/qt_designer/mainwindow.ui"
+    import qdarkstyle
+    
+    ui_file = os.path.dirname(__file__) + "/mainwindow.ui"
                 
     if ui_file:
         app = QApplication(sys.argv)
         ui = QuotesMainWindow( ui_file )
-        ui.setupUi( )
         ui.show()
         sys.exit(app.exec_())
