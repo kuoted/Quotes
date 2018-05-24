@@ -16,19 +16,19 @@
   <property name="windowTitle">
    <string>缠中说禅量化交易</string>
   </property>
-  <widget class="QWidget" name="_central_widget">
+  <widget class="QWidget" name="central_widget_">
    <widget class="QMdiArea" name="mdi_area_">
     <property name="geometry">
      <rect>
-      <x>1380</x>
-      <y>-280</y>
-      <width>1031</width>
+      <x>0</x>
+      <y>0</y>
+      <width>1491</width>
       <height>851</height>
      </rect>
     </property>
    </widget>
   </widget>
-  <widget class="QMenuBar" name="_menu_bar">
+  <widget class="QMenuBar" name="menu_bar_">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -79,38 +79,6 @@
    <addaction name="windows_menu_"/>
   </widget>
   <widget class="QStatusBar" name="status_bar_"/>
-  <widget class="QDockWidget" name="stocks_list_dock_">
-   <property name="features">
-    <set>QDockWidget::NoDockWidgetFeatures</set>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_">
-    <widget class="QTableWidget" name="stock_list_">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>256</width>
-       <height>192</height>
-      </rect>
-     </property>
-     <property name="sizeAdjustPolicy">
-      <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
-     </property>
-     <property name="rowCount">
-      <number>1</number>
-     </property>
-     <property name="columnCount">
-      <number>2</number>
-     </property>
-     <row/>
-     <column/>
-     <column/>
-    </widget>
-   </widget>
-  </widget>
   <widget class="QToolBar" name="tool_bar_">
    <property name="windowTitle">
     <string>ToolBar</string>
@@ -157,22 +125,14 @@
    </attribute>
    <addaction name="separator"/>
   </widget>
-  <widget class="QDockWidget" name="dockWidget">
+  <widget class="QDockWidget" name="stock_list_1">
+   <property name="windowTitle">
+    <string>股票列表</string>
+   </property>
    <attribute name="dockWidgetArea">
-    <number>2</number>
+    <number>1</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents_2">
-    <widget class="QTableView" name="stock_info_">
-     <property name="geometry">
-      <rect>
-       <x>-5</x>
-       <y>1</y>
-       <width>291</width>
-       <height>821</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
+   <widget class="QWidget" name="dockWidgetContents_3"/>
   </widget>
   <action name="actionSelect_Data_Source">
    <property name="checkable">
