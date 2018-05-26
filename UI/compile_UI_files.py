@@ -5,7 +5,7 @@ for root, dirs, files in os.walk('.'):
 #    print("root=" + root)
 #    print("dirs=" + str(dirs))
 #    print("files=" + str(files))
-    os.chdir(root)    
+    os.chdir(root)
     for file in files:        
         if file.endswith('.ui'):
             print( str( file ) )

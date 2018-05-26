@@ -16,6 +16,9 @@
   <property name="windowTitle">
    <string>缠中说禅量化交易</string>
   </property>
+  <property name="documentMode">
+   <bool>true</bool>
+  </property>
   <widget class="QWidget" name="central_widget_">
    <widget class="QMdiArea" name="mdi_area_">
     <property name="geometry">
