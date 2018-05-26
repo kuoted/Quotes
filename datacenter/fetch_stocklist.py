@@ -30,4 +30,6 @@ if __name__ == "__main__":
     qgs = QThreadPool.globalInstance().start(fs, 0)
     print('%s:%d: %s\n'%(sys._getframe().f_code.co_filename, sys._getframe().f_lineno, sys._getframe().f_code.co_name))
     print( 'fetch_stocklist.py:%s'%(QThread.currentThread().objectName()))
-    sys.exit(app.exec_( ))
+    ret = app.exec_( )
+    QThreadPool.globalInstance().waitForDone(-1)
+    sys.exit(ret)

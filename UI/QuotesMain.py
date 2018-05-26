@@ -72,4 +72,6 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     ui = QuotesMainWindow( ui_file )
     ui.show()
-    sys.exit(app.exec_())
+    ret = app.exec_( )
+    QThreadPool.globalInstance().waitForDone(-1)
+    sys.exit(ret)
