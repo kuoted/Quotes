@@ -29,7 +29,10 @@ class UI_MainWindowEx(Ui_MainWindow):
         
         self.stocks_list_dock_widget_ = QtWidgets.QDockWidget(self.main_window_)
         '''
-        AllDockWidgetFeatures = 7，DockWidgetClosable = 1，DockWidgetFloatable = 4，DockWidgetMovable = 2
+        DockWidgetClosable = 1，
+        DockWidgetFloatable = 4，
+        DockWidgetMovable = 2,        
+        AllDockWidgetFeatures = 7，
         DockWidgetVerticalTitleBar = 8
         NoDockWidgetFeatures = 0
         '''
@@ -60,7 +63,8 @@ class UI_MainWindowEx(Ui_MainWindow):
         self.stocks_list_dock_widget_.setWindowTitle(_translate("MainWindow", "股票列表"))
         return
         
-        def updateStocksList(self 
+    def updateStocksList(self):
+          pass
         
         
 if __name__ == "__main__":

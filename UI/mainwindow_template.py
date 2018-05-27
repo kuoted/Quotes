@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'mainwindow.ui'
+# Form implementation generated from reading ui file './res/mainwindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -13,6 +13,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setWindowModality(QtCore.Qt.ApplicationModal)
         MainWindow.resize(1482, 931)
+        MainWindow.setDocumentMode(True)
         self.central_widget_ = QtWidgets.QWidget(MainWindow)
         self.central_widget_.setObjectName("central_widget_")
         self.mdi_area_ = QtWidgets.QMdiArea(self.central_widget_)

@@ -9,6 +9,8 @@ import os
 import sys
 
 from PyQt5 import QtWidgets, QtGui, uic
+
+from PyQt5.QtCore import QThreadPool, QRunnable, QThread
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 import tushare as ts
