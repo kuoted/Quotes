@@ -70,6 +70,7 @@ if __name__ == "__main__":
     ui_file = ''
     #ui_file = os.path.dirname(__file__) + "/mainwindow.ui"
     app = QApplication(sys.argv)
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     ui = QuotesMainWindow( ui_file )
     ui.show()
     sys.exit(app.exec_())

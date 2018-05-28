@@ -19,7 +19,9 @@ class UI_MainWindowEx(Ui_MainWindow):
         super(UI_MainWindowEx, self).setupUi(self.main_window_)
         
     def __setupStockListDockWidget(self):
+        #self.mdi_area_.setContentsMargins(2, 2, 2, 2)
         self.stocks_list_dock_widget_ = QtWidgets.QDockWidget(self.main_window_)
+        self.stocks_list_dock_widget_.setContentsMargins(0, 0, 0, 0)
         '''
         AllDockWidgetFeatures = 7，DockWidgetClosable = 1，DockWidgetFloatable = 4，DockWidgetMovable = 2
         DockWidgetVerticalTitleBar = 8
@@ -32,6 +34,10 @@ class UI_MainWindowEx(Ui_MainWindow):
         self.favorite_stock_table_ = QtWidgets.QTableView()
         self.shenzhen_stock_table_ = QtWidgets.QTableView()
         self.shanghai_stock_table_ = QtWidgets.QTableView()
+        self.favorite_stock_table_.setContentsMargins(0, 0, 0, 0)
+        self.shenzhen_stock_table_.setContentsMargins(0, 0, 0, 0)
+        self.shanghai_stock_table_.setContentsMargins(0, 0, 0, 0)
+        
         self.stocks_list_table_widget_.addTab(self.favorite_stock_table_, '')
         self.stocks_list_table_widget_.addTab(self.shenzhen_stock_table_, 'shenzhen stock')
         self.stocks_list_table_widget_.addTab(self.shanghai_stock_table_, 'shanghai stock')
