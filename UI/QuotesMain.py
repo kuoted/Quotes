@@ -57,10 +57,10 @@ class QuotesMainWindow( QMainWindow ):
         print('%s:%d: %s'%(sys._getframe().f_code.co_name, sys._getframe().f_lineno, sys._getframe().f_code.co_name), end='\n', flush=True)
         return
 
-    def onKLinePeriodChanged(min, max):
+    def onKLinePeriodChanged(self, min, max):
         print('%s:%d: %s'%(sys._getframe().f_code.co_name, sys._getframe().f_lineno, sys._getframe().f_code.co_name), end='\n', flush=True)
         return
-    def onActionTriggered( me, action_ ):
+    def onActionTriggered( self, action_ ):
         print('%s:%d: %s'%(sys._getframe().f_code.co_name, sys._getframe().f_lineno, sys._getframe().f_code.co_name), end='\n', flush=True)
         print( "action_" + action_.objectName())
         return

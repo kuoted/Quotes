@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3cde275c-519c-49d6-b0d0-56fa4c0e5091}</ProjectGuid>
     <ProjectHome>..\</ProjectHome>
-    <StartupFile>UI\UI_MainWindows.py</StartupFile>
+    <StartupFile>UI\StockListWidget.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -19,67 +19,38 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Config.ini" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-01-19.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-01-20.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-01-23.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-01-24.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-01-25.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-01-26.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-03.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-06.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-07.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-08.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-09.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-10.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-13.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-14.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-15.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-16.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-17.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-20.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-21.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-22.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-23.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-24.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-27.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-02-28.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-01.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-02.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-03.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-06.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-07.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-08.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-09.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-10.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-13.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-14.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-15.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-16.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-17.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-20.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-21.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-22.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-23.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-24.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-27.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-03-28.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-06-12.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-07-28.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-08-11.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-09-01.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-10-23.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-11-01.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-11-02.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-11-23.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-12-07.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-12-08.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-12-11.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-12-12.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2017-12-15.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2018-01-08.txt" />
-    <Content Include="data\MktRankListStocks\RankListStocks2018-05-11.txt" />
-    <Content Include="data\tmp\Quote.png" />
+    <Compile Include="datacenter\fetch_stocklist.py" />
+    <Compile Include="UI\CandlestickItem.py" />
+    <Compile Include="UI\candle_stick.py" />
+    <Compile Include="UI\chap09\findandreplacedlg.py" />
+    <Compile Include="UI\chap09\findandreplacedlg.pyw" />
+    <Compile Include="UI\chap09\newsreader.pyw" />
+    <Compile Include="UI\chap09\paymentdlg.py" />
+    <Compile Include="UI\chap09\paymentdlg.pyw" />
+    <Compile Include="UI\chap09\resources_rc.py" />
+    <Compile Include="UI\chap09\sditexteditor.pyw" />
+    <Compile Include="UI\chap09\sditexteditor2.pyw" />
+    <Compile Include="UI\chap09\tabbededitor.pyw" />
+    <Compile Include="UI\chap09\textedit.py" />
+    <Compile Include="UI\chap09\texteditor.pyw" />
+    <Compile Include="UI\chap09\vehiclerentaldlg.py" />
+    <Compile Include="UI\chap09\vehiclerentaldlg.pyw" />
+    <Compile Include="UI\chap09\转换UI.py" />
+    <Compile Include="UI\compile_UI_files.py" />
+    <Compile Include="UI\crosshair.py" />
+    <Compile Include="UI\dockarea.py" />
+    <Compile Include="UI\findandreplacedlg.py" />
+    <Compile Include="UI\linkedViews.py" />
+    <Compile Include="UI\mainwindow.py" />
+    <Compile Include="UI\paymentdlg.py" />
+    <Compile Include="UI\QuotesMain.py" />
+    <Compile Include="UI\relativity_demo.py" />
+    <Compile Include="UI\StockListWidget.py" />
+    <Compile Include="UI\stock_list.py" />
+    <Compile Include="UI\UI_MainWindowEx.py" />
+    <Compile Include="UI\vehiclerentaldlg.py" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Imag\arrowBottom.png" />
     <Content Include="Imag\arrowLeft.png" />
     <Content Include="Imag\arrowRight.png" />
@@ -147,11 +118,6 @@
     <Content Include="Imag\transfer.png" />
     <Content Include="Imag\upButton.png" />
     <Content Include="Imag\warning.png" />
-    <Content Include="ScreenShot\主界面.png" />
-    <Content Include="ScreenShot\按日期查询.png" />
-    <Content Include="ScreenShot\登录界面.png" />
-    <Content Include="ScreenShot\行情K线.png" />
-    <Content Include="ScreenShot\论坛数据爬虫归并统计.png" />
     <Content Include="UI\chap09\bill-of-rights.txt" />
     <Content Include="UI\chap09\human-rights.txt" />
     <Content Include="UI\chap09\images\editadd.png" />
@@ -169,56 +135,8 @@
     <Content Include="UI\chap09\independence.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dxMain.py" />
-    <Compile Include="EmbedWidget.py" />
-    <Compile Include="Fuct_Account.py" />
-    <Compile Include="Fuct_DataAPI.py" />
-    <Compile Include="Fuct_drEngine.py" />
-    <Compile Include="Fuct_EnCode.py" />
-    <Compile Include="Fuct_FuctUI.py" />
-    <Compile Include="Fuct_Global.py" />
-    <Compile Include="Fuct_Http.py" />
-    <Compile Include="Fuct_Json.py" />
-    <Compile Include="Fuct_Limit.py" />
-    <Compile Include="Fuct_LocalData.py" />
-    <Compile Include="Fuct_MenuLink.py" />
-    <Compile Include="Fuct_Parser.py" />
-    <Compile Include="Fuct_QThreadUI.py" />
-    <Compile Include="Fuct_TableHeader.py" />
-    <Compile Include="Fuct_TS.py" />
-    <Compile Include="Login_Start.py" />
-    <Compile Include="UI\candle_stick.py" />
-    <Compile Include="UI\chap09\findandreplacedlg.py" />
-    <Compile Include="UI\chap09\findandreplacedlg.pyw" />
-    <Compile Include="UI\chap09\newsreader.pyw" />
-    <Compile Include="UI\chap09\paymentdlg.py" />
-    <Compile Include="UI\chap09\paymentdlg.pyw" />
-    <Compile Include="UI\chap09\sditexteditor.pyw" />
-    <Compile Include="UI\chap09\sditexteditor2.pyw" />
-    <Compile Include="UI\chap09\tabbededitor.pyw" />
-    <Compile Include="UI\chap09\textedit.py" />
-    <Compile Include="UI\chap09\texteditor.pyw" />
-    <Compile Include="UI\chap09\vehiclerentaldlg.py" />
-    <Compile Include="UI\chap09\vehiclerentaldlg.pyw" />
-    <Compile Include="UI\chap09\转换UI.py" />
-    <Compile Include="UI\textedit.py" />
-    <Compile Include="UI\texteditor.py" />
-    <Compile Include="UI\UI_MainWindows.py" />
-    <Compile Include="UI_Global.py" />
-    <Compile Include="UI_Login.py" />
-    <Compile Include="UI_Main.py" />
-    <Compile Include="UI_MessageBox.py" />
-    <Compile Include="UI_Register.py" />
-    <Compile Include="UI_Resource_rc.py" />
-    <Compile Include="UI_Setting.py" />
-    <Compile Include="转换UI.py" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="data\" />
-    <Folder Include="data\MktRankListStocks" />
-    <Folder Include="data\tmp" />
+    <Folder Include="datacenter" />
     <Folder Include="Imag" />
-    <Folder Include="ScreenShot" />
     <Folder Include="UI" />
     <Folder Include="UI\chap09" />
     <Folder Include="UI\chap09\images" />
