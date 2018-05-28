@@ -11,14 +11,12 @@ class FetchStockList(QRunnable):
     '''
     def __init__(self, done=None):
         super(QRunnable, self).__init__()
-        #super(QObject, self).__init__()
         self.work_obj_ = done
-        pass
     def run(self):
         print('%s:%d: %s'%(sys._getframe().f_code.co_filename, sys._getframe().f_lineno, sys._getframe().f_code.co_name))
         print( 'FetchStockList:%s'%(QThread.currentThread().objectName()))
         # do something
-        self.work_obj_.job_done_.emit()
+        self.work_obj_.emitSignal()
         return
 
 class StockListWidget(QObject):
@@ -29,19 +27,20 @@ class StockListWidget(QObject):
         self.table_widget_.setObjectName("stock_list_")
         self.table_widget_.setGridStyle(QtCore.Qt.SolidLine)
         self.table_widget_.setSortingEnabled(True)
-        #self.table_widget_.setRowCount(2)
-        #self.table_widget_.setColumnCount(12)
         self.table_widget_.setEnabled(True)
         self.job_done_.connect(self.handle_data)
-        QThreadPool.globalInstance().start(FetchStockList( self ), 0)
-    
+        #time.sleep(2)        
+        #self.job_done_.emit()
+        
     @pyqtSlot()
-    def handle_data():
+    def handle_data(self):
         print('%s:%d: %s'%(sys._getframe().f_code.co_filename, sys._getframe().f_lineno, sys._getframe().f_code.co_name))
-        print( 'FetchStockList:%s'%(QThread.currentThread().objectName()))
+        print( 'StockListWidget-handle_data:%s'%(QThread.currentThread().objectName()))
         
     def widget(self):
         return self.table_widget_
+    def emitSignal(self):
+        self.job_done_.emit()
         
 class StockListSubWindow(QObject):
     def __init__(self, parent=None):
@@ -51,10 +50,17 @@ class StockListSubWindow(QObject):
         self.setupUi()
     
     def setupUi(self):
-        stocks_of_shanghai_ = StockListWidget().widget()
-        self.tab_widget_.addTab(stocks_of_shanghai_, "sh_sse")
+        stocks_of_shanghai_ = StockListWidget()
+        
+        self.tab_widget_.addTab(stocks_of_shanghai_.widget(), "sh_sse")
         self.tab_widget_.addTab(StockListWidget().widget(), "sz_sse")
         self.tab_widget_.addTab(StockListWidget().widget(), "hk_sse")
+        
+        fsl = FetchStockList( stocks_of_shanghai_ )
+        QThreadPool.globalInstance().start(fsl, 0)
+        
+        #stocks_of_shanghai_.emitSignal()
+        #fsl.run()
     def widget(self):
         return self.tab_widget_
 

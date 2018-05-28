@@ -5,6 +5,7 @@
 # Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
+# update github: 219.76.4.4 github-cloud.s3.amazonaws.com
 import os
 import sys
 
