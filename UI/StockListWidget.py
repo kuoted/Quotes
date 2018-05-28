@@ -3,7 +3,10 @@
 
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import * #QThreadPool, QRunnable, QThread
+from PyQt5.QtCore import *
+
+import pandas as pd
+import tushare as ts
 
 class FetchStockList(QRunnable):
     '''
@@ -13,17 +16,22 @@ class FetchStockList(QRunnable):
         super(QRunnable, self).__init__()
         #super(QRunnable, self).setAutoDelete(False)
         self.work_obj_ = done
-        self.action_ = QtWidgets.QAction()
+        self.df_ = None
     def run(self):
         print('%s:%d: %s'%(sys._getframe().f_code.co_filename, sys._getframe().f_lineno, sys._getframe().f_code.co_name))
         print( 'FetchStockList:idealThreadCount:%d'%(QThread.currentThread().idealThreadCount()))
         # do something
-        self.work_obj_.job_done_.emit(self.action_)
+        try:
+            #self.df_ = ts.get_stock_basics()
+            self.df_ = ts.get_today_all()
+            #self.df_ = ts.get_tick_data('600848',date='2014-01-09')
+        except 
+            self.work_obj_.job_done_.emit(self)
+            #self.df_.to_csv('./stock_list.csv')
+        self.df_.to_csv('./stock_today_all.csv')
         return
-app = None
-MainWindow = []
 class StockListWidget(QObject):
-    job_done_   = pyqtSignal(['QAction*'])
+    job_done_   = pyqtSignal(FetchStockList)
     def __init__(self, parent=None):
         super(QObject, self).__init__()
         self.table_widget_ = QTableWidget(2, 12, parent)
@@ -31,8 +39,10 @@ class StockListWidget(QObject):
         self.table_widget_.setGridStyle(QtCore.Qt.SolidLine)
         self.table_widget_.setSortingEnabled(True)
         self.table_widget_.setEnabled(True)
-        self.job_done_['QAction*'].connect(self.handle_data)
-    
+        self.job_done_.connect(self.handle_data)
+        self.fsl = FetchStockList( self )
+        QThreadPool.globalInstance().start(self.fsl, 0)
+
     def retrieveStockList():
         pass
     
@@ -40,7 +50,8 @@ class StockListWidget(QObject):
     def handle_data(self, run_obj):
         #run_obj = None
         print('%s:%d: %s'%(sys._getframe().f_code.co_filename, sys._getframe().f_lineno, sys._getframe().f_code.co_name))
-        print( 'StockListWidget-handle_data:%s,obj=%s'%(QThread.currentThread().objectName(), type(run_obj)))
+        print('StockListWidget-handle_data:%s,obj=%s'%(QThread.currentThread().objectName(), type(run_obj)))
+        print(run_obj.df_)
         
     def widget(self):
         return self.table_widget_
@@ -59,8 +70,7 @@ class StockListSubWindow(QObject):
         self.tab_widget_.addTab(StockListWidget().widget(), "sz_sse")
         self.tab_widget_.addTab(StockListWidget().widget(), "hk_sse")
         
-        self.fsl = FetchStockList( stocks_of_shanghai_ )
-        QThreadPool.globalInstance().start(self.fsl, 0)
+        
     def widget(self):
         return self.tab_widget_
 
