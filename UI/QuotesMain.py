@@ -9,6 +9,8 @@ import os
 import sys
 
 from PyQt5 import QtWidgets, QtGui, uic
+
+from PyQt5.QtCore import QThreadPool, QRunnable, QThread
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 import tushare as ts
@@ -73,4 +75,6 @@ if __name__ == "__main__":
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     ui = QuotesMainWindow( ui_file )
     ui.show()
-    sys.exit(app.exec_())
+    ret = app.exec_( )
+    QThreadPool.globalInstance().waitForDone(-1)
+    sys.exit(ret)
