@@ -25,11 +25,14 @@ class FetchStockList(QRunnable):
             #self.df_ = ts.get_stock_basics()
             self.df_ = ts.get_today_all()
             #self.df_ = ts.get_tick_data('600848',date='2014-01-09')
-        except 
-            self.work_obj_.job_done_.emit(self)
+        except Exception as e:
+            print(e)
+            self.df_ = None
+        else:            
             #self.df_.to_csv('./stock_list.csv')
-        self.df_.to_csv('./stock_today_all.csv')
-        return
+            self.df_.to_csv('./stock_today_all.csv')
+            
+        self.work_obj_.job_done_.emit(self)
 class StockListWidget(QObject):
     job_done_   = pyqtSignal(FetchStockList)
     def __init__(self, parent=None):
